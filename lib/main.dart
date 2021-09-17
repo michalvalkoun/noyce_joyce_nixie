@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         appBar: MyAppBar(
           icon: Icons.bluetooth,
           title: 'Nixie',
-          widget: Devices(),
+          widget: const Devices(),
           isNavigator: true,
         ),
         drawer: const MyDrawer(),
