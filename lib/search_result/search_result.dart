@@ -1,27 +1,22 @@
 import 'package:flutter/material.dart';
 import 'device.dart';
+import 'package:nixie_app/icon_picker.dart';
+import 'my_app_bar.dart';
 
 class SearchResult extends StatelessWidget {
   const SearchResult({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final devices = ["clock", "radio", "alarm"];
+    final devices = ["clock", "radio", "clock", "radio", "alarm"];
     return Scaffold(
+      appBar: MyAppBar(),
+      drawer: Drawer(),
       body: Column(
         children: [
           Container(
-            width: double.infinity,
-            alignment: Alignment.centerRight,
-            margin: EdgeInsets.only(right: 20, top: 40),
-            child: Image.asset(
-              "assets/logo_horizontal.png",
-              height: 40,
-            ),
-          ),
-          Container(
             alignment: Alignment.centerLeft,
-            margin: EdgeInsets.only(top: 40, bottom: 20, left: 20),
+            margin: EdgeInsets.only(top: 30, bottom: 20, left: 20),
             child: Text(
               "SEARCH RESULTS:",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
@@ -30,7 +25,9 @@ class SearchResult extends StatelessWidget {
           Expanded(
             child: ListView(
               children: <Widget>[
-                ...devices.map((name) => Device(name: name)),
+                ...devices.map((device) => Device(
+                    device: IconPicker.devices.entries
+                        .firstWhere((element) => element.key == device))),
               ],
             ),
           ),
