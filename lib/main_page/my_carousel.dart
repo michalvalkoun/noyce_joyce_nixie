@@ -21,7 +21,7 @@ class _MyCarouselState extends State<MyCarousel> {
       child:
           Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         CarouselSlider(
-          items: IconPicker.devices.entries
+          items: IconPicker.devices
               .map(
                 (device) => Container(
                   margin: EdgeInsets.only(right: 10, left: 10),
@@ -39,19 +39,19 @@ class _MyCarouselState extends State<MyCarousel> {
                                   DevicePage(device: device)));
                     },
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              margin: EdgeInsets.all(15),
+                              margin: EdgeInsets.only(top: 15, left: 15),
                               child: Text(
-                                "nixie\n${device.key}",
+                                "nixie\n${device.name}",
                                 style: TextStyle(
                                     fontFamily: "Abraham",
-                                    fontSize: 40,
+                                    fontSize: 45,
                                     height: 1),
                               ),
                             ),
@@ -63,17 +63,17 @@ class _MyCarouselState extends State<MyCarousel> {
                                 color: Color(0xFFFCD205),
                               ),
                               child: Icon(
-                                device.value,
+                                device.icon,
                                 color: Colors.white,
-                                size: 30,
+                                size: 50,
                               ),
                             ),
                           ],
                         ),
                         Container(
-                          width: 300,
+                          width: 270,
                           child: Image.asset(
-                            "assets/${device.key}.png",
+                            "assets/${device.name}.png",
                           ),
                         ),
                       ],
@@ -89,26 +89,26 @@ class _MyCarouselState extends State<MyCarousel> {
             height: 450,
           ),
         ),
-        // Container(
-        //   margin: EdgeInsets.all(10),
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.center,
-        //     children: IconPicker.devices.entries.((entry) {
-        //       return GestureDetector(
-        //         onTap: () => _controller.animateToPage(entry.key),
-        //         child: Container(
-        //           width: _current == entry.key ? 12.0 : 8,
-        //           height: _current == entry.key ? 12.0 : 8,
-        //           margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-        //           decoration: BoxDecoration(
-        //               shape: BoxShape.circle,
-        //               color: Colors.black
-        //                   .withOpacity(_current == entry.key ? 1 : 0.8)),
-        //         ),
-        //       );
-        //     }).toList(),
-        //   ),
-        // ),
+        Container(
+          margin: EdgeInsets.all(10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: IconPicker.devices.asMap().entries.map((entry) {
+              return GestureDetector(
+                onTap: () => _controller.animateToPage(entry.key),
+                child: Container(
+                  width: _current == entry.key ? 12.0 : 8,
+                  height: _current == entry.key ? 12.0 : 8,
+                  margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.black
+                          .withOpacity(_current == entry.key ? 1 : 0.8)),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
       ]),
     );
   }

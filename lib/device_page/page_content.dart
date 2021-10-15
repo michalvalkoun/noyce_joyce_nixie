@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:nixie_app/icon_picker.dart';
 
 class PageContent extends StatelessWidget {
-  final device;
+  final DeviceProp device;
   const PageContent({Key? key, required this.device}) : super(key: key);
 
   @override
@@ -18,15 +19,15 @@ class PageContent extends StatelessWidget {
                 alignment: Alignment.bottomLeft,
                 margin: EdgeInsets.only(left: 20),
                 child: Text(
-                  "nixie\n${device.key}",
+                  "nixie\n${device.name}",
                   style:
-                      TextStyle(fontFamily: "Abraham", fontSize: 60, height: 1),
+                      TextStyle(fontFamily: "Abraham", fontSize: 65, height: 1),
                 ),
               ),
               Container(
                 margin: EdgeInsets.only(top: 30, right: 40),
                 child: Icon(
-                  device.value,
+                  device.icon,
                   color: Colors.white,
                   size: 60,
                 ),
@@ -57,17 +58,19 @@ class PageContent extends StatelessWidget {
             ),
           ),
         ),
-        Image.asset("assets/${device.key}.png", width: 250),
-        ElevatedButton(
-          onPressed: () {},
-          child: Container(
-            child: Text("Synchronize time"),
-          ),
-          style: ElevatedButton.styleFrom(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-            primary: Colors.black,
-            padding: EdgeInsets.fromLTRB(35, 15, 35, 15),
+        Container(
+          margin: EdgeInsets.only(top: 240),
+          child: ElevatedButton(
+            onPressed: () {},
+            child: Container(
+              child: Text("Synchronize time"),
+            ),
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
+              primary: Colors.black,
+              padding: EdgeInsets.fromLTRB(35, 15, 35, 15),
+            ),
           ),
         ),
       ],

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:nixie_app/icon_picker.dart';
 
 import 'my_switch.dart';
 
 class MySlidingUpPanel extends StatelessWidget {
-  final device;
+  final DeviceProp device;
   const MySlidingUpPanel({Key? key, required this.device}) : super(key: key);
 
   @override
@@ -63,7 +64,7 @@ class MySlidingUpPanel extends StatelessWidget {
               ),
             ],
           ),
-          if (device.key == "alarm")
+          if (device.name == "alarm")
             Container(
               alignment: Alignment.centerRight,
               margin: EdgeInsets.only(top: 20, right: 20),

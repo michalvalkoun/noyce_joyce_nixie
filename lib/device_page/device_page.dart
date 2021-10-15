@@ -16,6 +16,14 @@ class DevicePage extends StatelessWidget {
           width: double.infinity,
           child: Image.asset("assets/background.png", fit: BoxFit.fill),
         ),
+        Container(
+          margin: EdgeInsets.only(bottom: 100),
+          alignment: Alignment.bottomCenter,
+          child: Image.asset(
+            "assets/${device.name}.png",
+            width: 350,
+          ),
+        ),
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: MyAppBar(),

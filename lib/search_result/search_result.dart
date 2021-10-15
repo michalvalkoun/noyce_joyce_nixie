@@ -11,7 +11,6 @@ class SearchResult extends StatelessWidget {
     final devices = ["clock", "radio", "clock", "radio", "alarm"];
     return Scaffold(
       appBar: MyAppBar(),
-      drawer: Drawer(),
       body: Column(
         children: [
           Container(
@@ -26,8 +25,8 @@ class SearchResult extends StatelessWidget {
             child: ListView(
               children: <Widget>[
                 ...devices.map((device) => Device(
-                    device: IconPicker.devices.entries
-                        .firstWhere((element) => element.key == device))),
+                    device: IconPicker.devices
+                        .firstWhere((element) => element.name == device))),
               ],
             ),
           ),

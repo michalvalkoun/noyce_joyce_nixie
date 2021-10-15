@@ -12,13 +12,20 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       toolbarHeight: 60,
       titleSpacing: 0,
-      leading: IconButton(
-        icon: Icon(
-          Icons.format_list_bulleted,
-          size: 30,
-          color: Colors.black,
+      leading: Container(
+        margin: EdgeInsets.only(left: 20, top: 15),
+        child: InkWell(
+          borderRadius: const BorderRadius.all(Radius.circular(15)),
+          onTap: () {
+            Navigator.pop(context);
+            Navigator.pop(context);
+          },
+          child: Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+            size: 40,
+          ),
         ),
-        onPressed: () => Scaffold.of(context).openDrawer(),
       ),
       title: Container(
         height: 60,

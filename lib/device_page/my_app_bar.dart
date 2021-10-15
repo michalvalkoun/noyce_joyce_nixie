@@ -14,10 +14,13 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       titleSpacing: 0,
       leading: InkWell(
         onTap: () => Navigator.pop(context),
-        child: Icon(
-          Icons.arrow_back,
-          color: Colors.black,
-          size: 40,
+        child: Container(
+          margin: EdgeInsets.only(left: 20, top: 15),
+          child: Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+            size: 40,
+          ),
         ),
       ),
       title: Container(
