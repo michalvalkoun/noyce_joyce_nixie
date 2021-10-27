@@ -125,6 +125,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.4"
+  flutter_nordic_dfu:
+    dependency: "direct main"
+    description:
+      name: flutter_nordic_dfu
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
   flutter_switch:
     dependency: "direct main"
     description:

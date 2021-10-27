@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:nixie_app/adding_new_devices.dart';
+import 'package:nixie_app/search_result/search_result.dart';
 
 class AddNewDevices extends StatelessWidget {
   const AddNewDevices({Key? key}) : super(key: key);
@@ -12,7 +12,7 @@ class AddNewDevices extends StatelessWidget {
       alignment: Alignment.centerRight,
       child: ElevatedButton(
         onPressed: () => Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const AddingNewDevices())),
+            MaterialPageRoute(builder: (context) => const SearchResult())),
         style: ButtonStyle(
           padding: MaterialStateProperty.all(EdgeInsets.zero),
           backgroundColor: MaterialStateProperty.all(Colors.transparent),

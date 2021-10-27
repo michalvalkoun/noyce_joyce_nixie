@@ -16,10 +16,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
         margin: EdgeInsets.only(left: 20, top: 15),
         child: InkWell(
           borderRadius: const BorderRadius.all(Radius.circular(15)),
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.pop(context);
-          },
+          onTap: () => Navigator.pop(context),
           child: Icon(
             Icons.arrow_back,
             color: Colors.black,
