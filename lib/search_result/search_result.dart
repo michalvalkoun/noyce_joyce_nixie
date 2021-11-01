@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'device.dart';
 import 'package:nixie_app/icon_picker.dart';
 import 'my_app_bar.dart';
-import 'package:nixie_app/dfu/my_dfu.dart';
+//import 'package:nixie_app/dfu/my_dfu.dart';
 
 class SearchResult extends StatelessWidget {
   const SearchResult({Key? key}) : super(key: key);
