@@ -3,10 +3,17 @@ import 'package:flutter/material.dart';
 import 'my_app_bar.dart';
 import 'page_content.dart';
 import 'my_sliding_up_panel.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 
 class DevicePage extends StatelessWidget {
-  final device;
-  const DevicePage({Key? key, required this.device}) : super(key: key);
+  final BluetoothDevice device;
+  final icon;
+
+  const DevicePage({
+    Key? key,
+    required this.device,
+    required this.icon,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +27,7 @@ class DevicePage extends StatelessWidget {
           margin: EdgeInsets.only(bottom: 100),
           alignment: Alignment.bottomCenter,
           child: Image.asset(
-            "assets/${device.name}.png",
+            "assets/${icon.name}.png",
             width: 350,
           ),
         ),
@@ -29,8 +36,8 @@ class DevicePage extends StatelessWidget {
           appBar: MyAppBar(),
           body: Stack(
             children: [
-              PageContent(device: device),
-              MySlidingUpPanel(device: device),
+              PageContent(icon: icon, device: device),
+              MySlidingUpPanel(icon: icon, device: device),
             ],
           ),
         ),

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:nixie_app/icon_picker.dart';
-
+import 'package:flutter_blue/flutter_blue.dart';
 import 'my_switch.dart';
+import 'my_slider.dart';
 
 class MySlidingUpPanel extends StatelessWidget {
-  final DeviceProp device;
-  const MySlidingUpPanel({Key? key, required this.device}) : super(key: key);
+  final BluetoothDevice device;
+  final DeviceProp icon;
+  const MySlidingUpPanel({Key? key, required this.device, required this.icon})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,22 +48,20 @@ class MySlidingUpPanel extends StatelessWidget {
               ),
             ),
           ),
-          Row(
+          Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  MySwitch(name: "Night mode"),
-                  MySwitch(name: "Pouring effect"),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  MySwitch(name: "Show date"),
-                  MySwitch(name: "12h format"),
-                ],
+              MySlider(name: "Pouring effect"),
+              MySlider(name: "Night mode"),
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MySwitch(name: "Show date"),
+                    MySwitch(name: "12h format"),
+                  ],
+                ),
               ),
             ],
           ),

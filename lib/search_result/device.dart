@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:nixie_app/device_page/device_page.dart';
 import 'package:nixie_app/icon_picker.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 
 class Device extends StatelessWidget {
-  final DeviceProp device;
-  const Device({Key? key, required this.device}) : super(key: key);
+  final BluetoothDevice device;
+  final int rssi;
+  late DeviceProp icon;
+  Device({
+    Key? key,
+    required this.device,
+    required this.rssi,
+  }) : super(key: key) {
+    icon = IconPicker.devices.firstWhere((e) {
+      print(e.blName);
+      print(device.name);
+      return e.blName == device.name;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -13,7 +27,7 @@ class Device extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => DevicePage(device: device)));
+                builder: (context) => DevicePage(icon: icon, device: device)));
       },
       child: Container(
         child: Stack(
@@ -29,14 +43,31 @@ class Device extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    margin: EdgeInsets.only(left: 20, top: 20),
-                    child: Text(
-                      "nixie\n${device.name}",
-                      style: TextStyle(
-                          fontFamily: "Abraham", fontSize: 30, height: 1),
-                    ),
-                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(left: 20, top: 20),
+                        child: Text(
+                          "nixie\n${icon.name}",
+                          style: TextStyle(
+                              fontFamily: "Abraham", fontSize: 30, height: 1),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 20, top: 5),
+                        child: Text(
+                          device.id.toString(),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 20, top: 5),
+                        child: Text(
+                          rssi.toString(),
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
@@ -44,7 +75,7 @@ class Device extends StatelessWidget {
               margin: EdgeInsets.only(right: 40),
               alignment: Alignment.topRight,
               child: Image.asset(
-                "assets/${device.name}.png",
+                "assets/${icon.name}.png",
                 scale: 5.5,
               ),
             ),
@@ -57,7 +88,7 @@ class Device extends StatelessWidget {
                   color: Color(0xFFFCD205),
                 ),
                 child: Icon(
-                  device.icon,
+                  icon.icon,
                   color: Colors.white,
                   size: 30,
                 ),

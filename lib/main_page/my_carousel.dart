@@ -32,11 +32,11 @@ class _MyCarouselState extends State<MyCarousel> {
                   child: InkWell(
                     borderRadius: const BorderRadius.all(Radius.circular(20)),
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  DevicePage(device: device)));
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) =>
+                      //             DevicePage(device: device)));
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,

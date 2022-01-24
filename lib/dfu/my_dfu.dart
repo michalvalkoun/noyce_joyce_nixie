@@ -85,8 +85,15 @@ class _MyDFUState extends State<MyDFU> {
       () {
         scanResults.clear();
         scanSubscription = flutterBlue.scan().listen(
-              (scanResult) => setState(
-                () => scanResults.add(scanResult),
+              (result) => setState(
+                () {
+                  if (result.device.name == 'Nixie Clock BL' ||
+                      result.device.name == 'Nixie Alarm-Clock BL' ||
+                      result.device.name == 'Nixie Radio BL') {
+                    scanResults.add(result);
+                    scanResults.sort((a, b) => b.rssi.compareTo(a.rssi));
+                  }
+                },
               ),
             );
       },
