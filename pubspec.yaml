@@ -25,10 +25,10 @@ dependencies:
     sdk: flutter
   carousel_slider: ^4.0.0
   flutter_blue: ^0.8.0
-  flutter_nordic_dfu: ^3.0.0
   sliding_up_panel: ^2.0.0+1
   cupertino_icons: ^1.0.2
   flutter_switch: ^0.3.2
+  nordic_dfu: ^3.3.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

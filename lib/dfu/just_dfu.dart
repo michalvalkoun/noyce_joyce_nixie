@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:flutter_nordic_dfu/flutter_nordic_dfu.dart';
+import 'package:nordic_dfu/nordic_dfu.dart';
 
 class JustDFU {
   bool _runningDFU = false;
@@ -10,7 +10,7 @@ class JustDFU {
   Future<bool> startDFU(deviceId) async {
     _runningDFU = true;
     try {
-      await FlutterNordicDfu.startDfu(
+      await NordicDfu.startDfu(
         deviceId,
         'assets/file.zip',
         fileInAsset: true,
@@ -24,6 +24,6 @@ class JustDFU {
   }
 
   Future<void> stopDFU(deviceId) async {
-    await FlutterNordicDfu.abortDfu();
+    await NordicDfu.abortDfu();
   }
 }

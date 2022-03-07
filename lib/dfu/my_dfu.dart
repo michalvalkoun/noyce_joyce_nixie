@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
-import 'package:flutter_nordic_dfu/flutter_nordic_dfu.dart';
+import 'package:nordic_dfu/nordic_dfu.dart';
 import 'package:nixie_app/search_result/my_app_bar.dart';
 
 class MyDFU extends StatefulWidget {
@@ -39,21 +39,18 @@ class _MyDFUState extends State<MyDFU> {
                       itemCount: scanResults.length,
                       itemBuilder: (context, int index) {
                         return DeviceItem(
-                          isRunningItem: dfuRunningInx == null
-                              ? false
-                              : dfuRunningInx == index,
+                          isRunningItem: dfuRunningInx == null ? false : dfuRunningInx == index,
                           scanResult: scanResults[index],
                           onPress: dfuRunning
                               ? () async {
-                                  await FlutterNordicDfu.abortDfu();
+                                  await NordicDfu.abortDfu();
                                   setState(() {
                                     dfuRunningInx = null;
                                   });
                                 }
                               : () async {
                                   setState(() => dfuRunningInx = index);
-                                  await this
-                                      .doDfu(scanResults[index].device.id.id);
+                                  await this.doDfu(scanResults[index].device.id.id);
                                   setState(() => dfuRunningInx = null);
                                 },
                         );
@@ -70,8 +67,7 @@ class _MyDFUState extends State<MyDFU> {
     stopScan();
     dfuRunning = true;
     try {
-      await FlutterNordicDfu.startDfu(deviceId, 'assets/file.zip',
-          fileInAsset: true);
+      await NordicDfu.startDfu(deviceId, 'assets/file.zip', fileInAsset: true);
       dfuRunning = false;
     } catch (e) {
       dfuRunning = false;
@@ -87,9 +83,7 @@ class _MyDFUState extends State<MyDFU> {
         scanSubscription = flutterBlue.scan().listen(
               (result) => setState(
                 () {
-                  if (result.device.name == 'Nixie Clock BL' ||
-                      result.device.name == 'Nixie Alarm-Clock BL' ||
-                      result.device.name == 'Nixie Radio BL') {
+                  if (result.device.name == 'Nixie Clock BL' || result.device.name == 'Nixie Alarm-Clock BL' || result.device.name == 'Nixie Radio BL') {
                     scanResults.add(result);
                     scanResults.sort((a, b) => b.rssi.compareTo(a.rssi));
                   }
@@ -128,16 +122,12 @@ class DeviceItem extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(scanResult.device.name.length > 0
-                  ? scanResult.device.name
-                  : "Unknown"),
+              Text(scanResult.device.name.length > 0 ? scanResult.device.name : "Unknown"),
               Text(scanResult.device.id.id),
               Text("RSSI: ${scanResult.rssi}"),
             ],
           ),
-          TextButton(
-              onPressed: onPress,
-              child: isRunningItem ? Text("Abort DFU") : Text("Start DFU"))
+          TextButton(onPressed: onPress, child: isRunningItem ? Text("Abort DFU") : Text("Start DFU"))
         ],
       ),
     );
