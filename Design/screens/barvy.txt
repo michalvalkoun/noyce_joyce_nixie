@@ -1,4 +1,0 @@
-žlutá #FCD205
-bílá #FFFFFF
-černá #000000
-šedá #F5F5F5
