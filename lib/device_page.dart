@@ -370,7 +370,7 @@ class _DevicePageState extends State<DevicePage> {
                       child: MaterialButton(
                         child: Text(LocaleKeys.sync.tr(), style: const TextStyle(color: Colors.white)),
                         onPressed: () async {
-                          var sendStamp = (_now.millisecondsSinceEpoch / 1000 + 3600).round();
+                          var sendStamp = ((_now.millisecondsSinceEpoch + _now.timeZoneOffset.inMilliseconds) / 1000).round();
                           await _ble.writeCharacteristicWithoutResponse(
                             _dateTimeCharacteristic,
                             value: [sendStamp & 0xFF, (sendStamp >> 8) & 0xFF, (sendStamp >> 16) & 0xFF, (sendStamp >> 24) & 0xFF],
