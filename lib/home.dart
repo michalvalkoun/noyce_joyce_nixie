@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'translations/locale_keys.g.dart';
 import 'device_list.dart';
@@ -12,6 +13,18 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  late String _appVersion;
+  @override
+  void initState() {
+    super.initState();
+    getAppVersion();
+  }
+
+  void getAppVersion() async {
+    var tmp = await PackageInfo.fromPlatform();
+    setState(() => _appVersion = tmp.version);
+  }
+
   @override
   Widget build(BuildContext context) {
     List _manuals = [
@@ -114,6 +127,9 @@ class _HomeState extends State<Home> {
                   .toList(),
             ),
           ),
+          const SizedBox(height: 5),
+          Center(child: Text("App Version $_appVersion", textAlign: TextAlign.center)),
+          const SizedBox(height: 5),
         ],
       ),
     );

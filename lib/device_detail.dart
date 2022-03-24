@@ -188,7 +188,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                 const SizedBox(width: 30),
                 InkWell(
                   onTap: () async {
-                    await widget.deviceInteractor.timeFormat(0);
+                    await widget.deviceInteractor.timeFormat(1);
                     setState(() => _functionOn["Time Format"] = true);
                   },
                   child: Container(
