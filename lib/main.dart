@@ -1,15 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'package:noyce_joyce_nixie/ble/ble_dfu.dart';
+import 'package:provider/provider.dart';
 
+import 'ble/ble.dart';
 import 'translations/codegen_loader.g.dart';
 import 'home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
+  final _bleLogger = BleLogger();
+  final _ble = FlutterReactiveBle();
+  final _monitor = BleStatusMonitor(_ble);
+  final _scanner = BleScanner(ble: _ble, logMessage: _bleLogger.addToLog);
+  final _connector = BleDeviceConnector(ble: _ble, logMessage: _bleLogger.addToLog);
+  final _serviceDiscoverer = BleDeviceInteractor(ble: _ble, logMessage: _bleLogger.addToLog);
+  final _dfu = BleDFU(logMessage: _bleLogger.addToLog);
+
   await EasyLocalization.ensureInitialized();
-  runApp(EasyLocalization(path: 'assets/translations', supportedLocales: const [Locale('en'), Locale('cs')], fallbackLocale: const Locale('en'), assetLoader: const CodegenLoader(), child: const MyApp()));
+
+  runApp(
+    MultiProvider(
+      providers: [
+        Provider.value(value: _monitor),
+        Provider.value(value: _scanner),
+        Provider.value(value: _connector),
+        Provider.value(value: _serviceDiscoverer),
+        Provider.value(value: _dfu),
+        Provider.value(value: _bleLogger),
+        StreamProvider<BleStatus?>(create: (_) => _monitor.state, initialData: BleStatus.unknown),
+        StreamProvider<BleScannerState?>(create: (_) => _scanner.state, initialData: const BleScannerState()),
+        StreamProvider<BleConnectionState>(create: (_) => _connector.state, initialData: const BleConnectionState()),
+        StreamProvider<BleDFUState?>(create: (_) => _dfu.state, initialData: const BleDFUState()),
+      ],
+      child: EasyLocalization(path: 'assets/translations', supportedLocales: const [Locale('en'), Locale('cs')], fallbackLocale: const Locale('en'), assetLoader: const CodegenLoader(), child: const MyApp()),
+    ),
+  );
 }
 
 class MyBehavior extends ScrollBehavior {

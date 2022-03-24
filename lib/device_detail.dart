@@ -1,41 +1,72 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
-import 'package:nordic_dfu/nordic_dfu.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:provider/provider.dart';
 
 import 'translations/locale_keys.g.dart';
+import 'ble/ble_device_connector.dart';
+import 'ble/ble_device_interactor.dart';
+import 'ble/ble_dfu.dart';
 import 'constant.dart';
-import 'dfu.dart';
 
-class DevicePage extends StatefulWidget {
+class DeviceDetailScreen extends StatelessWidget {
   final DiscoveredDevice device;
-  const DevicePage({Key? key, required this.device}) : super(key: key);
+
+  const DeviceDetailScreen({required this.device, Key? key}) : super(key: key);
 
   @override
-  State<DevicePage> createState() => _DevicePageState();
+  Widget build(BuildContext context) => Consumer5<BleDeviceConnector, BleConnectionState, BleDeviceInteractor, BleDFU, BleDFUState?>(
+        builder: (_, deviceConnector, bleConnectionState, bleDeviceInteractor, bleDFU, bleDFUState, __) => _DeviceDetail(
+          device: device,
+          connectionStatus: bleConnectionState,
+          connect: deviceConnector.connect,
+          disconnect: deviceConnector.disconnect,
+          deviceInteractor: bleDeviceInteractor,
+          dfuState: bleDFUState ?? const BleDFUState(),
+          startDFU: bleDFU.startDFU,
+          stopDFU: bleDFU.stopDFU,
+        ),
+      );
 }
 
-class _DevicePageState extends State<DevicePage> {
-  final _ble = FlutterReactiveBle();
-  StreamSubscription<ConnectionStateUpdate>? _connectionStream;
+class _DeviceDetail extends StatefulWidget {
+  const _DeviceDetail({
+    Key? key,
+    required this.device,
+    required this.connectionStatus,
+    required this.connect,
+    required this.disconnect,
+    required this.deviceInteractor,
+    required this.dfuState,
+    required this.startDFU,
+    required this.stopDFU,
+  }) : super(key: key);
 
+  final DiscoveredDevice device;
+  final BleConnectionState connectionStatus;
+  final void Function(String deviceId, Function connected, Function disconnected) connect;
+  final void Function(String deviceId) disconnect;
+  final BleDeviceInteractor deviceInteractor;
+  final BleDFUState dfuState;
+  final Function(String, bool, StateSetter) startDFU;
+  final Function(StateSetter) stopDFU;
+
+  @override
+  State<_DeviceDetail> createState() => _DeviceDetailState();
+}
+
+class _DeviceDetailState extends State<_DeviceDetail> {
   DateTime _now = DateTime.now();
   late Timer _timer;
-  late StateSetter _setState;
 
   bool _functionOpen = false;
-  bool _connected = false;
-  bool _updateDialog = false;
+  bool _showingDialog = false;
   bool _fwCheck = false;
-
-  String _fwVer = "";
 
   int _functionNum = 0;
 
-  double _dfuPercent = 0.0;
   double _sliderValue = 0.0;
 
   TimeOfDay _pickedStartTime = TimeOfDay.now();
@@ -44,15 +75,6 @@ class _DevicePageState extends State<DevicePage> {
 
   final List<String> hourGlassLabels = ['1min', '10min', '30min', '1hod', '3AM'];
   final _functionOn = {"Alarm": false, "Time Format": false, "Night Mode": false, "Hourglass effect": false};
-
-  late QualifiedCharacteristic _firmwareRevisionCharacteristic;
-  late QualifiedCharacteristic _dateTimeCharacteristic;
-  late QualifiedCharacteristic _timeFormatCharacteristic;
-  late QualifiedCharacteristic _nightModeOnOffCharacteristic;
-  late QualifiedCharacteristic _nightModeStartCharacteristic;
-  late QualifiedCharacteristic _nightModeEndCharacteristic;
-  late QualifiedCharacteristic _hourGlassCharacteristic;
-  late QualifiedCharacteristic _blOnCharacteristic;
 
   final _theme = ThemeData.light().copyWith(
     timePickerTheme: TimePickerThemeData(
@@ -71,13 +93,13 @@ class _DevicePageState extends State<DevicePage> {
   void initState() {
     super.initState();
     if (mounted) _timer = Timer.periodic(const Duration(milliseconds: 300), (Timer t) => setState(() => _now = DateTime.now()));
-    WidgetsBinding.instance?.addPostFrameCallback((_) => _connect());
+    WidgetsBinding.instance?.addPostFrameCallback((_) => widget.connect(widget.device.id, _connectionReaction, _disconnectionReaction));
   }
 
   @override
   void dispose() {
     _timer.cancel();
-    _connectionStream?.cancel();
+    widget.disconnect(widget.device.id);
     super.dispose();
   }
 
@@ -86,22 +108,20 @@ class _DevicePageState extends State<DevicePage> {
     List<Function> _functionsInit = [
       if (widget.device.name == "alarm") () async {},
       () async {
-        var data = await _ble.readCharacteristic(_timeFormatCharacteristic);
-        setState(() => _functionOn["Time Format"] = data[0] > 0 ? true : false);
+        bool value = await widget.deviceInteractor.readTimeFormat();
+        setState(() => _functionOn["Time Format"] = value);
       },
       () async {
-        var data = await _ble.readCharacteristic(_nightModeOnOffCharacteristic) + await _ble.readCharacteristic(_nightModeStartCharacteristic) + await _ble.readCharacteristic(_nightModeEndCharacteristic);
-        var tmpStartDate = DateTime.fromMillisecondsSinceEpoch((data[1] + (data[2] << 8) + (data[3] << 16) + (data[4] << 24)) * 1000);
-        var tmpEndDate = DateTime.fromMillisecondsSinceEpoch((data[5] + (data[6] << 8) + (data[7] << 16) + (data[8] << 24)) * 1000);
+        var data = await widget.deviceInteractor.readNightMode();
         setState(() {
-          _functionOn["Night Mode"] = data[0] > 0 ? true : false;
-          _pickedStartTime = TimeOfDay(hour: tmpStartDate.hour - 1, minute: tmpStartDate.minute);
-          _pickedEndTime = TimeOfDay(hour: tmpEndDate.hour - 1, minute: tmpEndDate.minute);
+          _functionOn["Night Mode"] = data[0];
+          _pickedStartTime = data[1];
+          _pickedEndTime = data[2];
         });
       },
       () async {
-        var data = await _ble.readCharacteristic(_hourGlassCharacteristic);
-        setState(() => _sliderValue = data[0].toDouble());
+        int value = await widget.deviceInteractor.readHourGlass();
+        setState(() => _sliderValue = value.toDouble());
       }
     ];
 
@@ -152,7 +172,7 @@ class _DevicePageState extends State<DevicePage> {
               children: [
                 InkWell(
                   onTap: () async {
-                    await _ble.writeCharacteristicWithoutResponse(_timeFormatCharacteristic, value: [0]);
+                    await widget.deviceInteractor.timeFormat(0);
                     setState(() => _functionOn["Time Format"] = false);
                   },
                   child: Container(
@@ -168,7 +188,7 @@ class _DevicePageState extends State<DevicePage> {
                 const SizedBox(width: 30),
                 InkWell(
                   onTap: () async {
-                    await _ble.writeCharacteristicWithoutResponse(_timeFormatCharacteristic, value: [1]);
+                    await widget.deviceInteractor.timeFormat(0);
                     setState(() => _functionOn["Time Format"] = true);
                   },
                   child: Container(
@@ -198,7 +218,8 @@ class _DevicePageState extends State<DevicePage> {
               child: Switch(
                 value: _functionOn["Night Mode"]!,
                 onChanged: (value) async {
-                  await _ble.writeCharacteristicWithoutResponse(_nightModeOnOffCharacteristic, value: [value == true ? 1 : 0]);
+                  await widget.deviceInteractor.nightModeOnOff(value);
+
                   setState(() => _functionOn["Night Mode"] = value);
                 },
                 activeColor: Colors.white,
@@ -263,18 +284,7 @@ class _DevicePageState extends State<DevicePage> {
                   decoration: const BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(5))),
                   child: MaterialButton(
                     child: Text(LocaleKeys.set.tr(), style: const TextStyle(color: Colors.white)),
-                    onPressed: () async {
-                      var startTimeStamp = _pickedStartTime.hour * 3600 + _pickedStartTime.minute * 60;
-                      var endTimeStamp = _pickedEndTime.hour * 3600 + _pickedEndTime.minute * 60;
-                      await _ble.writeCharacteristicWithoutResponse(
-                        _nightModeStartCharacteristic,
-                        value: [startTimeStamp & 0xFF, (startTimeStamp >> 8) & 0xFF, (startTimeStamp >> 16) & 0xFF, (startTimeStamp >> 24) & 0xFF],
-                      );
-                      await _ble.writeCharacteristicWithoutResponse(
-                        _nightModeEndCharacteristic,
-                        value: [endTimeStamp & 0xFF, (endTimeStamp >> 8) & 0xFF, (endTimeStamp >> 16) & 0xFF, (endTimeStamp >> 24) & 0xFF],
-                      );
-                    },
+                    onPressed: () async => await widget.deviceInteractor.nightModeTime(_pickedStartTime, _pickedEndTime),
                   ),
                 ),
               ),
@@ -295,7 +305,7 @@ class _DevicePageState extends State<DevicePage> {
               thumbColor: Colors.white,
               max: 4,
               divisions: 4,
-              onChangeEnd: (value) async => await _ble.writeCharacteristicWithoutResponse(_hourGlassCharacteristic, value: [value.toInt()]),
+              onChangeEnd: (value) async => await widget.deviceInteractor.hourglass(value.toInt()),
               onChanged: (value) => setState(() => _sliderValue = value),
             ),
             Row(
@@ -308,7 +318,7 @@ class _DevicePageState extends State<DevicePage> {
     ];
 
     return WillPopScope(
-      onWillPop: () async => _fwCheck && !_updateDialog,
+      onWillPop: () async => _fwCheck && !_showingDialog,
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -361,22 +371,13 @@ class _DevicePageState extends State<DevicePage> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  if (_connected && _fwCheck)
+                  if (widget.connectionStatus.connected && _fwCheck)
                     Container(
                       width: double.infinity,
                       height: 50,
                       margin: const EdgeInsets.symmetric(horizontal: 20),
                       decoration: const BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(5))),
-                      child: MaterialButton(
-                        child: Text(LocaleKeys.sync.tr(), style: const TextStyle(color: Colors.white)),
-                        onPressed: () async {
-                          var sendStamp = ((_now.millisecondsSinceEpoch + _now.timeZoneOffset.inMilliseconds) / 1000).round();
-                          await _ble.writeCharacteristicWithoutResponse(
-                            _dateTimeCharacteristic,
-                            value: [sendStamp & 0xFF, (sendStamp >> 8) & 0xFF, (sendStamp >> 16) & 0xFF, (sendStamp >> 24) & 0xFF],
-                          );
-                        },
-                      ),
+                      child: MaterialButton(child: Text(LocaleKeys.sync.tr(), style: const TextStyle(color: Colors.white)), onPressed: () => widget.deviceInteractor.syncTime(_now)),
                     )
                   else
                     Container(
@@ -385,6 +386,8 @@ class _DevicePageState extends State<DevicePage> {
                       margin: const EdgeInsets.symmetric(horizontal: 20),
                       decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: const BorderRadius.all(Radius.circular(5))),
                     ),
+                  const SizedBox(height: 40),
+                  if (!widget.connectionStatus.connected || !_fwCheck) const CircularProgressIndicator(color: Colors.black),
                 ],
               )
             else
@@ -459,7 +462,7 @@ class _DevicePageState extends State<DevicePage> {
                     scrollDirection: Axis.horizontal,
                     children: _functionItems
                         .map(
-                          (fce) => _connected && _fwCheck
+                          (fce) => widget.connectionStatus.connected && _fwCheck
                               ? InkWell(
                                   splashFactory: NoSplash.splashFactory,
                                   highlightColor: Colors.transparent,
@@ -523,48 +526,25 @@ class _DevicePageState extends State<DevicePage> {
     );
   }
 
-  Future<void> _connect() async {
-    _connectionStream =
-        _ble.connectToAdvertisingDevice(id: widget.device.id, withServices: [Uuid.parse(infoServiceUuid)], prescanDuration: const Duration(seconds: 5), connectionTimeout: const Duration(seconds: 2)).listen(
-      (status) async {
-        switch (status.connectionState) {
-          case DeviceConnectionState.connected:
-            var discoveredServices = await _ble.discoverServices(status.deviceId);
+  Future<void> _disconnectionReaction() async {
+    if (!_showingDialog) Navigator.pop(context);
+  }
 
-            if (discoveredServices[2].characteristicIds.contains(Uuid.parse("00002A26-0000-1000-8000-00805F9B34FB"))) {
-              _firmwareRevisionCharacteristic = QualifiedCharacteristic(serviceId: Uuid.parse(infoServiceUuid), characteristicId: Uuid.parse("00002A26-0000-1000-8000-00805F9B34FB"), deviceId: status.deviceId);
-              _blOnCharacteristic = QualifiedCharacteristic(serviceId: Uuid.parse(interfaceServiceUuid), characteristicId: Uuid.parse("A8ED14FF-130A-4D4B-ACBA-5DE7E77E9B47"), deviceId: status.deviceId);
-              var data = utf8.decode(await _ble.readCharacteristic(_firmwareRevisionCharacteristic));
-              _fwVer = data.split(' ')[2];
-              if (_fwVer != latestFwVer) await _showUpdateAlert(context);
-            } else {
-              _fwVer = "1.0";
-              await _showOldFirmwareAlert(context);
-            }
-            _fwCheck = true;
-
-            _timeFormatCharacteristic = QualifiedCharacteristic(serviceId: Uuid.parse(interfaceServiceUuid), characteristicId: Uuid.parse("A8ED1420-130A-4D4B-ACBA-5DE7E77E9B47"), deviceId: status.deviceId);
-            _dateTimeCharacteristic = QualifiedCharacteristic(serviceId: Uuid.parse(interfaceServiceUuid), characteristicId: Uuid.parse("A8ED1410-130A-4D4B-ACBA-5DE7E77E9B47"), deviceId: status.deviceId);
-            _hourGlassCharacteristic = QualifiedCharacteristic(serviceId: Uuid.parse(interfaceServiceUuid), characteristicId: Uuid.parse("A8ED1421-130A-4D4B-ACBA-5DE7E77E9B47"), deviceId: status.deviceId);
-            _nightModeOnOffCharacteristic = QualifiedCharacteristic(serviceId: Uuid.parse(interfaceServiceUuid), characteristicId: Uuid.parse("A8ED1423-130A-4D4B-ACBA-5DE7E77E9B47"), deviceId: status.deviceId);
-            _nightModeStartCharacteristic = QualifiedCharacteristic(serviceId: Uuid.parse(interfaceServiceUuid), characteristicId: Uuid.parse("A8ED1425-130A-4D4B-ACBA-5DE7E77E9B47"), deviceId: status.deviceId);
-            _nightModeEndCharacteristic = QualifiedCharacteristic(serviceId: Uuid.parse(interfaceServiceUuid), characteristicId: Uuid.parse("A8ED1424-130A-4D4B-ACBA-5DE7E77E9B47"), deviceId: status.deviceId);
-
-            _connected = true;
-            break;
-          case DeviceConnectionState.disconnected:
-            _connected = false;
-            if (!_updateDialog) Navigator.pop(context);
-            break;
-          default:
-            break;
-        }
-      },
-    );
+  Future<void> _connectionReaction() async {
+    var discoveredServices = await widget.deviceInteractor.discoverServices(widget.device.id);
+    if (discoveredServices[2].characteristicIds.contains(Uuid.parse("00002A26-0000-1000-8000-00805F9B34FB"))) {
+      widget.deviceInteractor.discoverCharacteristics(true, widget.device.id);
+      var fwVer = await widget.deviceInteractor.readFwRev();
+      if (fwVer != latestFwVer) await _showUpdateAlert(context, fwVer);
+    } else {
+      await _showOldFirmwareAlert(context);
+    }
+    widget.deviceInteractor.discoverCharacteristics(false, widget.device.id);
+    _fwCheck = true;
   }
 
   Future<void> _showOldFirmwareAlert(BuildContext context) async {
-    _updateDialog = true;
+    _showingDialog = true;
 
     await showDialog(
       context: context,
@@ -582,7 +562,7 @@ class _DevicePageState extends State<DevicePage> {
                 child: const Text("OK", style: TextStyle(color: Colors.black)),
                 onPressed: () async {
                   {
-                    _updateDialog = false;
+                    _showingDialog = false;
                     Navigator.pop(context);
                     Navigator.pop(context);
                   }
@@ -595,71 +575,49 @@ class _DevicePageState extends State<DevicePage> {
     );
   }
 
-  Future<void> _showUpdateAlert(BuildContext context) async {
-    _updateDialog = true;
-    DFU dfu = DFU();
+  Future<void> _showUpdateAlert(BuildContext context, String fwVer) async {
+    _showingDialog = true;
     await showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => WillPopScope(
-        onWillPop: () async => false,
-        child: AlertDialog(
-          title: Text(LocaleKeys.update.tr()),
-          content: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              _setState = setState;
-              return Column(
+        onWillPop: () async {
+          if (!widget.dfuState.dfuIsInProgress) {
+            Navigator.pop(context);
+            Navigator.pop(context);
+            return true;
+          }
+          return false;
+        },
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text(LocaleKeys.update.tr()),
+              content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(LocaleKeys.updateText.tr(args: [_fwVer, latestFwVer])),
+                  Text(LocaleKeys.updateText.tr(args: [fwVer, latestFwVer])),
                   const SizedBox(height: 20),
-                  if (_dfuPercent > 0) LinearProgressIndicator(backgroundColor: Colors.grey, color: Colors.black, value: _dfuPercent, semanticsLabel: "Progress", semanticsValue: "Value", minHeight: 7)
+                  if (widget.dfuState.dfuIsInProgress) LinearProgressIndicator(backgroundColor: Colors.grey, color: Colors.black, value: widget.dfuState.dfuPercent > 0 ? widget.dfuState.dfuPercent : null, minHeight: 7)
                 ],
-              );
-            },
-          ),
-          actions: [
-            Container(
-              height: 40,
-              decoration: const BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(5))),
-              child: MaterialButton(
-                child: Text(LocaleKeys.cancel.tr(), style: const TextStyle(color: Colors.white)),
-                onPressed: () {
-                  if (dfu.getRunningDFU()) {
-                    NordicDfu.abortDfu();
-                  } else {
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                  }
-                },
               ),
-            ),
-            Container(
-              height: 40,
-              decoration: const BoxDecoration(color: Color(0xFFFCD205), borderRadius: BorderRadius.all(Radius.circular(5))),
-              child: MaterialButton(
-                child: Text(LocaleKeys.updateButton.tr(), style: const TextStyle(color: Colors.black)),
-                onPressed: () async {
-                  {
-                    if (!dfu.getRunningDFU()) {
-                      await _ble.writeCharacteristicWithoutResponse(_blOnCharacteristic, value: [0x99]);
-                      bool success = await dfu.startDFU(
-                        widget.device.id,
-                        latestFwVer,
-                        DefaultDfuProgressListenerAdapter(onProgressChangedHandle: (deviceAddress, percent, speed, avgSpeed, currentPart, partsTotal) => _setState(() => _dfuPercent = percent! / 100)),
-                        true,
-                      );
-                      _dfuPercent = 0;
-                      Navigator.pop(context);
-                      if (!success) Navigator.pop(context);
-                      _updateDialog = false;
-                      await _connect();
-                    }
-                  }
-                },
-              ),
-            ),
-          ],
+              actions: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(primary: const Color(0xFFFCD205), onPrimary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
+                  onPressed: !widget.dfuState.dfuIsInProgress
+                      ? () async {
+                          await widget.deviceInteractor.blOn();
+                          await widget.startDFU(widget.device.id, true, setState);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          _showingDialog = false;
+                        }
+                      : null,
+                  child: Text(LocaleKeys.updateButton.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

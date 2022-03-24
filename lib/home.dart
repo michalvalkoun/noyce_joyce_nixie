@@ -3,7 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'translations/locale_keys.g.dart';
-import 'search_results.dart';
+import 'device_list.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -47,10 +47,10 @@ class _HomeState extends State<Home> {
             width: double.infinity,
             height: 60,
             margin: const EdgeInsets.symmetric(horizontal: 20),
-            decoration: const BoxDecoration(color: Color(0xFFFCD205), borderRadius: BorderRadius.all(Radius.circular(5))),
-            child: MaterialButton(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(primary: const Color(0xFFFCD205), onPrimary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15)),
               child: Text(LocaleKeys.search_2.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SearchResult())),
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DeviceListScreen())),
             ),
           ),
           const SizedBox(height: 40),
@@ -61,27 +61,21 @@ class _HomeState extends State<Home> {
               padding: EdgeInsets.zero,
               children: _manuals
                   .map(
-                    (item) => Container(
+                    (item) => Card(
                       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                      padding: const EdgeInsets.all(10),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        boxShadow: [BoxShadow(color: Colors.black12, spreadRadius: 1, blurRadius: 1, offset: Offset(0, 2))],
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(item.name, style: const TextStyle(color: Colors.black, fontFamily: "Abraham", fontSize: 25)),
-                          Container(
-                            height: 45,
-                            decoration: const BoxDecoration(color: Color(0xFFFCD205), borderRadius: BorderRadius.all(Radius.circular(5))),
-                            child: MaterialButton(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(item.name, style: const TextStyle(color: Colors.black, fontFamily: "Abraham", fontSize: 25)),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(primary: const Color(0xFFFCD205), onPrimary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15)),
                               child: Text(LocaleKeys.download.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                               onPressed: () => launch(item.link),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   )
@@ -97,25 +91,22 @@ class _HomeState extends State<Home> {
               scrollDirection: Axis.horizontal,
               children: _other
                   .map(
-                    (item) => InkWell(
-                      splashFactory: NoSplash.splashFactory,
-                      highlightColor: Colors.transparent,
-                      onTap: item.function,
-                      child: Container(
-                        width: 120,
-                        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          boxShadow: [BoxShadow(color: Colors.black12, spreadRadius: 1, blurRadius: 1, offset: Offset(0, 2))],
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(item.icon, size: 30, color: Colors.black),
-                            const SizedBox(height: 10),
-                            Text(item.name, style: const TextStyle(fontSize: 13, color: Colors.black)),
-                          ],
+                    (item) => Card(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+                      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                      child: InkWell(
+                        borderRadius: const BorderRadius.all(Radius.circular(7)),
+                        onTap: item.function,
+                        child: SizedBox(
+                          width: 120,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(item.icon, size: 30, color: Colors.black),
+                              const SizedBox(height: 10),
+                              Text(item.name, style: const TextStyle(fontSize: 13, color: Colors.black)),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -143,8 +134,19 @@ class Manual {
   const Manual(this.name, this.link);
 }
 
+class CreditsName {
+  final String title1;
+  final String title2;
+  const CreditsName(this.title1, this.title2);
+}
+
 class Credits extends StatelessWidget {
   const Credits({Key? key}) : super(key: key);
+  final List _credits = const [
+    CreditsName("Developed by", "Michal Valkoun"),
+    CreditsName("Designed by", "Aneta Kalousková"),
+    CreditsName("Firmware by", "Ondřej Nentvich"),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -157,65 +159,29 @@ class Credits extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(color: Color(0xFFFCD205), borderRadius: BorderRadius.all(Radius.circular(5))),
-              child: Stack(
-                children: const [
-                  Text(
-                    "Created by",
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+          children: _credits
+              .map(
+                (item) => Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: const BoxDecoration(color: Color(0xFFFCD205), borderRadius: BorderRadius.all(Radius.circular(5))),
+                  child: Stack(
+                    children: [
+                      Text(
+                        item.title1,
+                        style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25, top: 25),
+                        child: Text(
+                          item.title2,
+                          style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 25, top: 25),
-                    child: Text(
-                      "Michal Valkoun",
-                      style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(color: Color(0xFFFCD205), borderRadius: BorderRadius.all(Radius.circular(5))),
-              child: Stack(
-                children: const [
-                  Text(
-                    "Design by",
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 25, top: 25),
-                    child: Text(
-                      "Aneta Kalousková",
-                      style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(color: Color(0xFFFCD205), borderRadius: BorderRadius.all(Radius.circular(5))),
-              child: Stack(
-                children: const [
-                  Text(
-                    "Firmware by",
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 25, top: 25),
-                    child: Text(
-                      "Ondřej Nentvich",
-                      style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+                ),
+              )
+              .toList(),
         ),
       ),
     );

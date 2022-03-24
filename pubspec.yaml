@@ -35,6 +35,7 @@ dependencies:
   permission_handler: ^9.2.0
   easy_localization: ^3.0.0
   url_launcher: ^6.0.18
+  provider: ^6.0.2
 
 dev_dependencies:
   flutter_test:
