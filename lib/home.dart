@@ -13,7 +13,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late String _appVersion;
+  String _appVersion = "Unknown";
   @override
   void initState() {
     super.initState();

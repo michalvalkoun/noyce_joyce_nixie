@@ -62,13 +62,27 @@ class _DevicelistState extends State<_Devicelist> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) => widget.startScan());
+    WidgetsBinding.instance?.addPostFrameCallback((_) => startScan());
   }
 
   @override
   void dispose() {
     widget.stopScan();
     super.dispose();
+  }
+
+  Future<void> startScan() async {
+    if (widget.bleStatus != BleStatus.ready) {
+      int tmp = await widget.checkPermissions();
+      final snackBar = SnackBar(content: Text(determineText(widget.bleStatus)), action: tmp == -1 ? SnackBarAction(label: "Settings", onPressed: () => openAppSettings()) : null);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+    if (widget.bleStatus == BleStatus.ready) {
+      if (!widget.startScan()) {
+        const snackBar = SnackBar(content: Text("Please wait, you scanned too many times.", textAlign: TextAlign.center));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    }
   }
 
   @override
@@ -149,21 +163,7 @@ class _DevicelistState extends State<_Devicelist> {
                 ElevatedButton(
                   child: const Text("Scan"),
                   style: ElevatedButton.styleFrom(primary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15)),
-                  onPressed: !widget.scannerState.scanIsInProgress && !widget.dfuState.dfuIsInProgress
-                      ? () async {
-                          if (widget.bleStatus != BleStatus.ready) {
-                            int tmp = await widget.checkPermissions();
-                            final snackBar = SnackBar(content: Text(determineText(widget.bleStatus)), action: tmp == -1 ? SnackBarAction(label: "Settings", onPressed: () => openAppSettings()) : null);
-                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          }
-                          if (widget.bleStatus == BleStatus.ready) {
-                            if (!widget.startScan()) {
-                              const snackBar = SnackBar(content: Text("Please wait, you scanned too many times.", textAlign: TextAlign.center));
-                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                            }
-                          }
-                        }
-                      : null,
+                  onPressed: !widget.scannerState.scanIsInProgress && !widget.dfuState.dfuIsInProgress ? () => startScan() : null,
                 ),
                 ElevatedButton(
                   child: const Text("Stop"),
