@@ -39,8 +39,6 @@ class CodegenLoader extends AssetLoader{
   "listBleStatus2": "Povolte aplikaci použít Bluetooth a polohu",
   "listBleStatus3": "Bluetooth je vypnuté, zapněte ho",
   "listBleStatus4": "Zapněte umístění v nastavení",
-  "listBleStatus5": "Bluetooth je v pořádku",
-  "listBleStatus6": "Čekám na stav Bluetooth",
   "listBleWarning": "Čekejte prosím, hledali jste příliš mnohokrát.",
   "detailTimeFormat": "Formát Času",
   "detailTimeFormatText": "Mění formát času mezi 12 a 24.",
@@ -57,7 +55,9 @@ class CodegenLoader extends AssetLoader{
   "detailUpdateText": "Aby jste mohli používat všechny dostupné funkce aktualizujte si zařízení z FW {} na FW {}\n\nZařízení nesmí být spárované s telefonem při aktualizaci.",
   "detailUpdateButton": "Aktualizovat",
   "homeSettings": "Nastavení",
-  "detailUpdateLegacyText": "Zařízení nesmí být spárované s telefonem při aktualizaci.\n\n1. Odpojte zařízení ze záskuvky\n2. Zapojte jej zpět se stisknutým tlačítkem MENU\n3. Vyhledejte zařízení v aplikaci\n4. Klikněte na zařízení se žlutým pozadím a počkejte"
+  "detailUpdateLegacyText": "Zařízení nesmí být spárované s telefonem při aktualizaci.\n\n1. Odpojte zařízení ze záskuvky\n2. Zapojte jej zpět se stisknutým tlačítkem MENU\n3. Vyhledejte zařízení v aplikaci\n4. Klikněte na zařízení se žlutým pozadím a počkejte",
+  "detailCustomTime": "Vlastní Čas",
+  "detailCustomTimeText": "Nastavte si svůj vlastní čas."
 };
 static const Map<String,dynamic> en = {
   "homeCredits": "Credits",
@@ -84,8 +84,6 @@ static const Map<String,dynamic> en = {
   "listBleStatus2": "Authorize the app to use Bluetooth and location",
   "listBleStatus3": "Bluetooth is powered off on your device, turn it on",
   "listBleStatus4": "Enable location services",
-  "listBleStatus5": "Bluetooth is up and running",
-  "listBleStatus6": "Waiting to fetch Bluetooth status",
   "listBleWarning": "Please wait, you scanned too many times.",
   "detailTimeFormat": "Time Format",
   "detailTimeFormatText": "Change time format between 12 and 24.",
@@ -102,7 +100,9 @@ static const Map<String,dynamic> en = {
   "detailUpdateText": "To use the available functions update your firmware version from FW {} to FW {}\n\nThe device must not be paired with the phone during the update.",
   "detailUpdateButton": "Update",
   "homeSettings": "Settings",
-  "detailUpdateLegacyText": "The device must not be paired with the phone during the update.\n\n1. Unplug your device from the outlet\n2. Plug it back in while holding the MENU button\n3. Search for devices in the app\n4. Click the device with the yellow background and wait"
+  "detailUpdateLegacyText": "The device must not be paired with the phone during the update.\n\n1. Unplug your device from the outlet\n2. Plug it back in while holding the MENU button\n3. Search for devices in the app\n4. Click the device with the yellow background and wait",
+  "detailCustomTime": "Custom Time",
+  "detailCustomTimeText": "Set your own time."
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"cs": cs, "en": en};
 }

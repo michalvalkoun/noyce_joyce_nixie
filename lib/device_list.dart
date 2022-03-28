@@ -72,16 +72,17 @@ class _DevicelistState extends State<_Devicelist> {
   }
 
   Future<void> startScan() async {
+    ScaffoldMessenger.of(context).clearSnackBars();
     if (widget.bleStatus != BleStatus.ready) {
       int permissonsResult = await widget.checkPermissions();
-      final snackBar = SnackBar(content: Text(determineText(widget.bleStatus)), action: permissonsResult == -1 ? SnackBarAction(label: LocaleKeys.homeSettings.tr(), onPressed: () => openAppSettings()) : null);
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      if (widget.bleStatus != BleStatus.ready && widget.bleStatus != BleStatus.unknown) {
+        final snackBar = SnackBar(content: Text(determineText(widget.bleStatus)), action: permissonsResult == -1 ? SnackBarAction(label: LocaleKeys.homeSettings.tr(), onPressed: () => openAppSettings()) : null);
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
     }
     if (widget.bleStatus == BleStatus.ready) {
       if (!widget.startScan()) {
         final snackBar = SnackBar(content: Text(LocaleKeys.listBleWarning.tr(), textAlign: TextAlign.center));
-        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     }
@@ -191,10 +192,8 @@ class _DevicelistState extends State<_Devicelist> {
         return LocaleKeys.listBleStatus3.tr();
       case BleStatus.locationServicesDisabled:
         return LocaleKeys.listBleStatus4.tr();
-      case BleStatus.ready:
-        return LocaleKeys.listBleStatus5.tr();
-      case BleStatus.unknown:
-        return LocaleKeys.listBleStatus6.tr();
+      default:
+        return "";
     }
   }
 }

@@ -23,8 +23,6 @@
   "listBleStatus2": "Authorize the app to use Bluetooth and location",
   "listBleStatus3": "Bluetooth is powered off on your device, turn it on",
   "listBleStatus4": "Enable location services",
-  "listBleStatus5": "Bluetooth is up and running",
-  "listBleStatus6": "Waiting to fetch Bluetooth status",
   "listBleWarning": "Please wait, you scanned too many times.",
   "detailTimeFormat": "Time Format",
   "detailTimeFormatText": "Change time format between 12 and 24.",
@@ -41,5 +39,7 @@
   "detailUpdateText": "To use the available functions update your firmware version from FW {} to FW {}\n\nThe device must not be paired with the phone during the update.",
   "detailUpdateButton": "Update",
   "homeSettings": "Settings",
-  "detailUpdateLegacyText": "The device must not be paired with the phone during the update.\n\n1. Unplug your device from the outlet\n2. Plug it back in while holding the MENU button\n3. Search for devices in the app\n4. Click the device with the yellow background and wait"
+  "detailUpdateLegacyText": "The device must not be paired with the phone during the update.\n\n1. Unplug your device from the outlet\n2. Plug it back in while holding the MENU button\n3. Search for devices in the app\n4. Click the device with the yellow background and wait",
+  "detailCustomTime": "Custom Time",
+  "detailCustomTimeText": "Set your own time."
 }

@@ -76,46 +76,44 @@ class BleDeviceInteractor {
     }
   }
 
-  Future<void> nightModeTime(TimeOfDay start, TimeOfDay end) async {
-    var startTimeStamp = start.hour * 3600 + start.minute * 60;
-    var endTimeStamp = end.hour * 3600 + end.minute * 60;
-    await writeCharacteristic(
-      _nightModeStartCharacteristic,
-      [startTimeStamp & 0xFF, (startTimeStamp >> 8) & 0xFF, (startTimeStamp >> 16) & 0xFF, (startTimeStamp >> 24) & 0xFF],
-    );
-    await writeCharacteristic(
-      _nightModeEndCharacteristic,
-      [endTimeStamp & 0xFF, (endTimeStamp >> 8) & 0xFF, (endTimeStamp >> 16) & 0xFF, (endTimeStamp >> 24) & 0xFF],
-    );
+  Future<void> setNightModeOnOff(bool value) async {
+    await writeCharacteristic(_nightModeOnOffCharacteristic, [value == true ? 1 : 0]);
   }
 
-  Future<List> readNightMode() async {
-    var data = await readCharacteristic(_nightModeOnOffCharacteristic) + await readCharacteristic(_nightModeStartCharacteristic) + await readCharacteristic(_nightModeEndCharacteristic);
-    var tmpStartDate = DateTime.fromMillisecondsSinceEpoch((data[1] + (data[2] << 8) + (data[3] << 16) + (data[4] << 24)) * 1000);
-    var tmpEndDate = DateTime.fromMillisecondsSinceEpoch((data[5] + (data[6] << 8) + (data[7] << 16) + (data[8] << 24)) * 1000);
-    return [data[0] > 0 ? true : false, TimeOfDay(hour: tmpStartDate.hour - 1, minute: tmpStartDate.minute), TimeOfDay(hour: tmpEndDate.hour - 1, minute: tmpEndDate.minute)];
+  Future<void> setNightModeTime(DateTime start, DateTime end) async {
+    var startTimeStamp = ((start.millisecondsSinceEpoch + start.timeZoneOffset.inMilliseconds) / 1000).round();
+    var endTimeStamp = ((end.millisecondsSinceEpoch + end.timeZoneOffset.inMilliseconds) / 1000).round();
+    await writeCharacteristic(_nightModeStartCharacteristic, _intToList(startTimeStamp));
+    await writeCharacteristic(_nightModeEndCharacteristic, _intToList(endTimeStamp));
   }
 
-  Future<int> readHourGlass() async {
+  Future<List> getNightMode() async {
+    var state = await readCharacteristic(_nightModeOnOffCharacteristic);
+    var start = await readCharacteristic(_nightModeStartCharacteristic);
+    var end = await readCharacteristic(_nightModeEndCharacteristic);
+    return [
+      state[0] > 0 ? true : false,
+      DateTime.fromMillisecondsSinceEpoch((_listToInt(start) - 3600) * 1000),
+      DateTime.fromMillisecondsSinceEpoch((_listToInt(end) - 3600) * 1000),
+    ];
+  }
+
+  Future<void> setHourglass(int value) async {
+    await writeCharacteristic(_hourGlassCharacteristic, [value]);
+  }
+
+  Future<int> getHourGlass() async {
     var data = await readCharacteristic(_hourGlassCharacteristic);
     return data[0];
   }
 
-  Future<bool> readTimeFormat() async {
+  Future<void> setTimeFormat(int value) async {
+    await writeCharacteristic(_timeFormatCharacteristic, [value]);
+  }
+
+  Future<bool> getTimeFormat() async {
     var data = await readCharacteristic(_timeFormatCharacteristic);
     return data[0] > 0 ? true : false;
-  }
-
-  Future<void> hourglass(int value) async {
-    await writeCharacteristic(_hourGlassCharacteristic, [value]);
-  }
-
-  Future<void> nightModeOnOff(bool value) async {
-    await writeCharacteristic(_nightModeOnOffCharacteristic, [value == true ? 1 : 0]);
-  }
-
-  Future<void> timeFormat(int value) async {
-    await writeCharacteristic(_timeFormatCharacteristic, [value]);
   }
 
   Future<void> blOn() async {
@@ -127,11 +125,21 @@ class BleDeviceInteractor {
     return data.split(' ')[2];
   }
 
-  Future<void> syncTime(DateTime _now) async {
-    var sendStamp = ((_now.millisecondsSinceEpoch + _now.timeZoneOffset.inMilliseconds) / 1000).round();
-    await writeCharacteristic(
-      _dateTimeCharacteristic,
-      [sendStamp & 0xFF, (sendStamp >> 8) & 0xFF, (sendStamp >> 16) & 0xFF, (sendStamp >> 24) & 0xFF],
-    );
+  Future<void> setTime(DateTime time) async {
+    var sendStamp = ((time.millisecondsSinceEpoch + time.timeZoneOffset.inMilliseconds) / 1000).round();
+    await writeCharacteristic(_dateTimeCharacteristic, _intToList(sendStamp));
+  }
+
+  Future<DateTime> getTime() async {
+    var data = await readCharacteristic(_dateTimeCharacteristic);
+    return DateTime.fromMillisecondsSinceEpoch(_listToInt(data) * 1000 - DateTime.now().timeZoneOffset.inMilliseconds);
+  }
+
+  List<int> _intToList(int value) {
+    return [value & 0xFF, (value >> 8) & 0xFF, (value >> 16) & 0xFF, (value >> 24) & 0xFF];
+  }
+
+  int _listToInt(List<int> data) {
+    return data[0] + (data[1] << 8) + (data[2] << 16) + (data[3] << 24);
   }
 }

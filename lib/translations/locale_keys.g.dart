@@ -25,8 +25,6 @@ abstract class  LocaleKeys {
   static const listBleStatus2 = 'listBleStatus2';
   static const listBleStatus3 = 'listBleStatus3';
   static const listBleStatus4 = 'listBleStatus4';
-  static const listBleStatus5 = 'listBleStatus5';
-  static const listBleStatus6 = 'listBleStatus6';
   static const listBleWarning = 'listBleWarning';
   static const detailTimeFormat = 'detailTimeFormat';
   static const detailTimeFormatText = 'detailTimeFormatText';
@@ -44,5 +42,7 @@ abstract class  LocaleKeys {
   static const detailUpdateButton = 'detailUpdateButton';
   static const homeSettings = 'homeSettings';
   static const detailUpdateLegacyText = 'detailUpdateLegacyText';
+  static const detailCustomTime = 'detailCustomTime';
+  static const detailCustomTimeText = 'detailCustomTimeText';
 
 }

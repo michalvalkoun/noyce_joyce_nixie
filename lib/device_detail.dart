@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:provider/provider.dart';
 
 import 'translations/locale_keys.g.dart';
@@ -69,25 +70,14 @@ class _DeviceDetailState extends State<_DeviceDetail> {
 
   double _sliderValue = 0.0;
 
-  TimeOfDay _pickedStartTime = TimeOfDay.now();
-  TimeOfDay _pickedEndTime = TimeOfDay.now();
-  TimeOfDay _pickedAlarmTime = TimeOfDay.now();
+  DateTime _pickedStartTime = DateTime.now();
+  DateTime _pickedEndTime = DateTime.now();
+  DateTime _pickedAlarmTime = DateTime.now();
+
+  DateTime _pickedDateTime = DateTime.now();
 
   final List<String> hourGlassLabels = ['1min', '10min', '30min', '60min', '3am'];
-  final _functionOn = {"Alarm": false, "TimeFormat": false, "NightMode": false, "HourglassEffect": false};
-
-  final _theme = ThemeData.light().copyWith(
-    timePickerTheme: TimePickerThemeData(
-      hourMinuteColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.selected) ? Colors.black : Colors.white),
-      hourMinuteTextColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.selected) ? Colors.white : Colors.black),
-      dialHandColor: Colors.black,
-      dialBackgroundColor: Colors.grey.shade200,
-      dialTextColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.selected) ? Colors.white : Colors.black),
-    ),
-    textButtonTheme: TextButtonThemeData(
-      style: ButtonStyle(foregroundColor: MaterialStateColor.resolveWith((states) => Colors.black), overlayColor: MaterialStateColor.resolveWith((states) => Colors.grey)),
-    ),
-  );
+  final _functionOn = {"Alarm": false, "TimeFormat": false, "NightMode": false};
 
   @override
   void initState() {
@@ -108,11 +98,11 @@ class _DeviceDetailState extends State<_DeviceDetail> {
     List<Function> _functionsInit = [
       if (widget.device.name == "alarm") () async {},
       () async {
-        bool value = await widget.deviceInteractor.readTimeFormat();
+        bool value = await widget.deviceInteractor.getTimeFormat();
         setState(() => _functionOn["TimeFormat"] = value);
       },
       () async {
-        var data = await widget.deviceInteractor.readNightMode();
+        var data = await widget.deviceInteractor.getNightMode();
         setState(() {
           _functionOn["NightMode"] = data[0];
           _pickedStartTime = data[1];
@@ -120,8 +110,12 @@ class _DeviceDetailState extends State<_DeviceDetail> {
         });
       },
       () async {
-        int value = await widget.deviceInteractor.readHourGlass();
+        int value = await widget.deviceInteractor.getHourGlass();
         setState(() => _sliderValue = value.toDouble());
+      },
+      () async {
+        var time = await widget.deviceInteractor.getTime();
+        setState(() => _pickedDateTime = time);
       }
     ];
 
@@ -142,8 +136,8 @@ class _DeviceDetailState extends State<_DeviceDetail> {
               if (_functionOn["Alarm"]!)
                 InkWell(
                   onTap: () async {
-                    var tmpTime = await showTimePicker(context: context, initialTime: TimeOfDay.now(), builder: (context, child) => Theme(data: _theme, child: child!)) ?? _pickedAlarmTime;
-                    setState(() => _pickedAlarmTime = tmpTime);
+                    var time = await DatePicker.showTimePicker(context, currentTime: _pickedAlarmTime);
+                    if (time != null) setState(() => _pickedAlarmTime = time);
                   },
                   child: Container(
                     margin: const EdgeInsets.only(left: 10),
@@ -172,7 +166,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
               children: [
                 InkWell(
                   onTap: () async {
-                    await widget.deviceInteractor.timeFormat(0);
+                    await widget.deviceInteractor.setTimeFormat(0);
                     setState(() => _functionOn["TimeFormat"] = false);
                   },
                   child: Container(
@@ -188,7 +182,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                 const SizedBox(width: 30),
                 InkWell(
                   onTap: () async {
-                    await widget.deviceInteractor.timeFormat(1);
+                    await widget.deviceInteractor.setTimeFormat(1);
                     setState(() => _functionOn["TimeFormat"] = true);
                   },
                   child: Container(
@@ -218,7 +212,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
               child: Switch(
                 value: _functionOn["NightMode"]!,
                 onChanged: (value) async {
-                  await widget.deviceInteractor.nightModeOnOff(value);
+                  await widget.deviceInteractor.setNightModeOnOff(value);
 
                   setState(() => _functionOn["NightMode"] = value);
                 },
@@ -233,8 +227,8 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                 children: [
                   InkWell(
                     onTap: () async {
-                      var tmpTime = await showTimePicker(context: context, initialTime: _pickedStartTime, builder: (context, child) => Theme(data: _theme, child: child!)) ?? _pickedStartTime;
-                      setState(() => _pickedStartTime = tmpTime);
+                      var time = await DatePicker.showTime12hPicker(context, currentTime: _pickedStartTime);
+                      if (time != null) setState(() => _pickedStartTime = time);
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -254,8 +248,8 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                   const SizedBox(width: 30),
                   InkWell(
                     onTap: () async {
-                      var tmpTime = await showTimePicker(context: context, initialTime: _pickedEndTime, builder: (context, child) => Theme(data: _theme, child: child!)) ?? _pickedEndTime;
-                      setState(() => _pickedEndTime = tmpTime);
+                      var time = await DatePicker.showTime12hPicker(context, currentTime: _pickedEndTime);
+                      if (time != null) setState(() => _pickedEndTime = time);
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -284,7 +278,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                   decoration: const BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(5))),
                   child: MaterialButton(
                     child: Text(LocaleKeys.detailNighModeSet.tr(), style: const TextStyle(color: Colors.white)),
-                    onPressed: () async => await widget.deviceInteractor.nightModeTime(_pickedStartTime, _pickedEndTime),
+                    onPressed: () async => await widget.deviceInteractor.setNightModeTime(_pickedStartTime, _pickedEndTime),
                   ),
                 ),
               ),
@@ -305,12 +299,62 @@ class _DeviceDetailState extends State<_DeviceDetail> {
               thumbColor: Colors.white,
               max: 4,
               divisions: 4,
-              onChangeEnd: (value) async => await widget.deviceInteractor.hourglass(value.toInt()),
+              onChangeEnd: (value) async => await widget.deviceInteractor.setHourglass(value.toInt()),
               onChanged: (value) => setState(() => _sliderValue = value),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: hourGlassLabels.map((name) => Text(name, style: hourGlassLabels.indexOf(name) == _sliderValue ? const TextStyle(fontSize: 15, fontWeight: FontWeight.bold) : null)).toList(),
+            ),
+          ],
+        ),
+      ),
+      NameIconWidget(
+        LocaleKeys.detailCustomTime.tr(),
+        Icons.timer,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(LocaleKeys.detailCustomTimeText.tr()),
+            const SizedBox(height: 50),
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(primary: Colors.white, onPrimary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5)),
+                    child: Text(
+                      "${_pickedDateTime.year.toString()}-${_pickedDateTime.month.toString().padLeft(2, '0')}-${_pickedDateTime.day.toString().padLeft(2, '0')} ${_pickedDateTime.hour.toString().padLeft(2, '0')}:${_pickedDateTime.minute.toString().padLeft(2, '0')}:${_pickedDateTime.second.toString().padLeft(2, '0')}",
+                      style: const TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+                    ),
+                    onPressed: () async {
+                      var date = await DatePicker.showDatePicker(context, currentTime: _pickedDateTime);
+                      var time = await DatePicker.showTimePicker(context, currentTime: _pickedDateTime);
+                      setState(() {
+                        if (date != null) {
+                          _pickedDateTime = DateTime(date.year, date.month, date.day, _pickedDateTime.hour, _pickedDateTime.minute, _pickedDateTime.second);
+                        }
+                        if (time != null) {
+                          _pickedDateTime = DateTime(_pickedDateTime.year, _pickedDateTime.month, _pickedDateTime.day, time.hour, time.minute, time.second);
+                        }
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 50),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Container(
+                height: 45,
+                margin: const EdgeInsets.only(right: 10),
+                decoration: const BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(5))),
+                child: MaterialButton(
+                  child: Text(LocaleKeys.detailNighModeSet.tr(), style: const TextStyle(color: Colors.white)),
+                  onPressed: () async => await widget.deviceInteractor.setTime(_pickedDateTime),
+                ),
+              ),
             ),
           ],
         ),
@@ -377,7 +421,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                       height: 50,
                       margin: const EdgeInsets.symmetric(horizontal: 20),
                       decoration: const BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(5))),
-                      child: MaterialButton(child: Text(LocaleKeys.detailSyncTime.tr(), style: const TextStyle(color: Colors.white)), onPressed: () => widget.deviceInteractor.syncTime(_now)),
+                      child: MaterialButton(child: Text(LocaleKeys.detailSyncTime.tr(), style: const TextStyle(color: Colors.white)), onPressed: () => widget.deviceInteractor.setTime(_now)),
                     )
                   else
                     Container(
@@ -474,14 +518,15 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                                             _functionOpen = false;
                                           } else {
                                             _functionOpen = true;
+                                            _functionsInit[_functionNum]();
                                           }
                                         } else {
                                           _functionOpen = true;
                                           _functionNum = _functionItems.indexOf(fce);
+                                          _functionsInit[_functionNum]();
                                         }
                                       },
                                     );
-                                    _functionsInit[_functionNum]();
                                   },
                                   child: Container(
                                     width: 120,

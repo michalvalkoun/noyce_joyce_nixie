@@ -111,6 +111,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_datetime_picker:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: master
+      resolved-ref: eb66486c47d50bf550950c196486121ffcea8885
+      url: "git@github.com:Realank/flutter_datetime_picker.git"
+    source: git
+    version: "1.5.1"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
