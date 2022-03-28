@@ -28,12 +28,12 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     List _manuals = [
-      Manual(LocaleKeys.clock.tr(), LocaleKeys.clockLink.tr()),
-      Manual(LocaleKeys.alarm.tr(), LocaleKeys.alarmLink.tr()),
+      Manual(LocaleKeys.homeClock.tr(), LocaleKeys.homeClockLink.tr()),
+      Manual(LocaleKeys.homeAlarm.tr(), LocaleKeys.homeAlarmLink.tr()),
     ];
     List _other = [
-      NameIconFunction(LocaleKeys.shop.tr(), Icons.shopping_cart, () => launch(LocaleKeys.eshopLink.tr())),
-      NameIconFunction("Credits", Icons.people, () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Credits()))),
+      NameIconFunction(LocaleKeys.homeShop.tr(), Icons.shopping_cart, () => launch(LocaleKeys.homeShopLink.tr())),
+      NameIconFunction(LocaleKeys.homeCredits.tr(), Icons.people, () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => Credits()))),
     ];
     return Scaffold(
       body: Column(
@@ -42,7 +42,7 @@ class _HomeState extends State<Home> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Padding(padding: const EdgeInsets.only(left: 20, top: 40), child: InkWell(child: Image.asset("assets/logo.png", scale: 7), onTap: () => launch(LocaleKeys.noyceLink.tr()))),
+              Padding(padding: const EdgeInsets.only(left: 20, top: 40), child: InkWell(child: Image.asset("assets/logo.png", scale: 7), onTap: () => launch(LocaleKeys.homeWebLink.tr()))),
               Padding(
                 padding: const EdgeInsets.only(right: 30, top: 30),
                 child: DropdownButton(
@@ -54,7 +54,7 @@ class _HomeState extends State<Home> {
             ],
           ),
           const SizedBox(height: 55),
-          Padding(padding: const EdgeInsets.only(left: 20), child: Text(LocaleKeys.search_1.tr(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
+          Padding(padding: const EdgeInsets.only(left: 20), child: Text(LocaleKeys.homeSearchTitle.tr(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
           const SizedBox(height: 10),
           Container(
             width: double.infinity,
@@ -62,12 +62,12 @@ class _HomeState extends State<Home> {
             margin: const EdgeInsets.symmetric(horizontal: 20),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(primary: const Color(0xFFFCD205), onPrimary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15)),
-              child: Text(LocaleKeys.search_2.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+              child: Text(LocaleKeys.homeSearch.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DeviceListScreen())),
             ),
           ),
           const SizedBox(height: 40),
-          Padding(padding: const EdgeInsets.only(left: 20), child: Text(LocaleKeys.manuals.tr(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
+          Padding(padding: const EdgeInsets.only(left: 20), child: Text(LocaleKeys.homeManuals.tr(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
           const SizedBox(height: 10),
           Expanded(
             child: ListView(
@@ -84,7 +84,7 @@ class _HomeState extends State<Home> {
                             Text(item.name, style: const TextStyle(color: Colors.black, fontFamily: "Abraham", fontSize: 25)),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(primary: const Color(0xFFFCD205), onPrimary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15)),
-                              child: Text(LocaleKeys.download.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                              child: Text(LocaleKeys.homeDownload.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                               onPressed: () => launch(item.link),
                             ),
                           ],
@@ -96,7 +96,7 @@ class _HomeState extends State<Home> {
             ),
           ),
           const SizedBox(height: 10),
-          Padding(padding: const EdgeInsets.only(left: 20), child: Text(LocaleKeys.other_things.tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17))),
+          Padding(padding: const EdgeInsets.only(left: 20), child: Text(LocaleKeys.homeOther.tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17))),
           const SizedBox(height: 10),
           SizedBox(
             height: 100,
@@ -128,7 +128,7 @@ class _HomeState extends State<Home> {
             ),
           ),
           const SizedBox(height: 5),
-          Center(child: Text("App Version $_appVersion", textAlign: TextAlign.center)),
+          Center(child: Text("${LocaleKeys.homeVersion.tr()} $_appVersion", textAlign: TextAlign.center)),
           const SizedBox(height: 5),
         ],
       ),
@@ -157,11 +157,11 @@ class CreditsName {
 }
 
 class Credits extends StatelessWidget {
-  const Credits({Key? key}) : super(key: key);
-  final List _credits = const [
-    CreditsName("Developed by", "Michal Valkoun"),
-    CreditsName("Designed by", "Aneta Kalousková"),
-    CreditsName("Firmware by", "Ondřej Nentvich"),
+  Credits({Key? key}) : super(key: key);
+  final List _credits = [
+    CreditsName(LocaleKeys.homeCreditsDev.tr(), "Michal Valkoun"),
+    CreditsName(LocaleKeys.homeCreditsDes.tr(), "Aneta Kalousková"),
+    CreditsName(LocaleKeys.homeCreditsFir.tr(), "Ondřej Nentvich"),
   ];
 
   @override

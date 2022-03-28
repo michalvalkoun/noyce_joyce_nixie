@@ -73,8 +73,8 @@ class _DeviceDetailState extends State<_DeviceDetail> {
   TimeOfDay _pickedEndTime = TimeOfDay.now();
   TimeOfDay _pickedAlarmTime = TimeOfDay.now();
 
-  final List<String> hourGlassLabels = ['1min', '10min', '30min', '1hod', '3AM'];
-  final _functionOn = {"Alarm": false, "Time Format": false, "Night Mode": false, "Hourglass effect": false};
+  final List<String> hourGlassLabels = ['1min', '10min', '30min', '60min', '3am'];
+  final _functionOn = {"Alarm": false, "TimeFormat": false, "NightMode": false, "HourglassEffect": false};
 
   final _theme = ThemeData.light().copyWith(
     timePickerTheme: TimePickerThemeData(
@@ -109,12 +109,12 @@ class _DeviceDetailState extends State<_DeviceDetail> {
       if (widget.device.name == "alarm") () async {},
       () async {
         bool value = await widget.deviceInteractor.readTimeFormat();
-        setState(() => _functionOn["Time Format"] = value);
+        setState(() => _functionOn["TimeFormat"] = value);
       },
       () async {
         var data = await widget.deviceInteractor.readNightMode();
         setState(() {
-          _functionOn["Night Mode"] = data[0];
+          _functionOn["NightMode"] = data[0];
           _pickedStartTime = data[1];
           _pickedEndTime = data[2];
         });
@@ -160,12 +160,12 @@ class _DeviceDetailState extends State<_DeviceDetail> {
           ),
         ),
       NameIconWidget(
-        LocaleKeys.time_format.tr(),
+        LocaleKeys.detailTimeFormat.tr(),
         Icons.timelapse,
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(LocaleKeys.time_format_text.tr()),
+            Text(LocaleKeys.detailTimeFormatText.tr()),
             const SizedBox(height: 70),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -173,32 +173,32 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                 InkWell(
                   onTap: () async {
                     await widget.deviceInteractor.timeFormat(0);
-                    setState(() => _functionOn["Time Format"] = false);
+                    setState(() => _functionOn["TimeFormat"] = false);
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                     decoration: BoxDecoration(
-                      color: _functionOn["Time Format"]! ? const Color(0xFFFCE9A7) : Colors.black,
+                      color: _functionOn["TimeFormat"]! ? const Color(0xFFFCE9A7) : Colors.black,
                       borderRadius: const BorderRadius.all(Radius.circular(5)),
                       boxShadow: const [BoxShadow(color: Colors.black12, spreadRadius: 2, blurRadius: 3, offset: Offset(0, 2))],
                     ),
-                    child: Column(children: [Text("24 h", style: TextStyle(color: _functionOn["Time Format"]! ? Colors.black : Colors.white, fontSize: 25, fontWeight: FontWeight.bold))]),
+                    child: Column(children: [Text("24 h", style: TextStyle(color: _functionOn["TimeFormat"]! ? Colors.black : Colors.white, fontSize: 25, fontWeight: FontWeight.bold))]),
                   ),
                 ),
                 const SizedBox(width: 30),
                 InkWell(
                   onTap: () async {
                     await widget.deviceInteractor.timeFormat(1);
-                    setState(() => _functionOn["Time Format"] = true);
+                    setState(() => _functionOn["TimeFormat"] = true);
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                     decoration: BoxDecoration(
-                      color: _functionOn["Time Format"]! ? Colors.black : const Color(0xFFFCE9A7),
+                      color: _functionOn["TimeFormat"]! ? Colors.black : const Color(0xFFFCE9A7),
                       borderRadius: const BorderRadius.all(Radius.circular(5)),
                       boxShadow: const [BoxShadow(color: Colors.black12, spreadRadius: 2, blurRadius: 3, offset: Offset(0, 2))],
                     ),
-                    child: Column(children: [Text("12 h", style: TextStyle(color: _functionOn["Time Format"]! ? Colors.white : Colors.black, fontSize: 25, fontWeight: FontWeight.bold))]),
+                    child: Column(children: [Text("12 h", style: TextStyle(color: _functionOn["TimeFormat"]! ? Colors.white : Colors.black, fontSize: 25, fontWeight: FontWeight.bold))]),
                   ),
                 ),
               ],
@@ -207,27 +207,27 @@ class _DeviceDetailState extends State<_DeviceDetail> {
         ),
       ),
       NameIconWidget(
-        LocaleKeys.night_mode.tr(),
+        LocaleKeys.detailNightMode.tr(),
         Icons.mode_night,
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(LocaleKeys.night_mode_text.tr()),
+            Text(LocaleKeys.detailNightModeText.tr()),
             Transform.scale(
               scale: 1.5,
               child: Switch(
-                value: _functionOn["Night Mode"]!,
+                value: _functionOn["NightMode"]!,
                 onChanged: (value) async {
                   await widget.deviceInteractor.nightModeOnOff(value);
 
-                  setState(() => _functionOn["Night Mode"] = value);
+                  setState(() => _functionOn["NightMode"] = value);
                 },
                 activeColor: Colors.white,
                 activeTrackColor: Colors.black,
               ),
             ),
             const SizedBox(height: 20),
-            if (_functionOn["Night Mode"]!)
+            if (_functionOn["NightMode"]!)
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -245,7 +245,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                       ),
                       child: Column(
                         children: [
-                          Text(LocaleKeys.start.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                          Text(LocaleKeys.detailNighModeStart.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                           Text("${_pickedStartTime.hour.toString().padLeft(2, '0')}:${_pickedStartTime.minute.toString().padLeft(2, '0')}", style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold))
                         ],
                       ),
@@ -266,7 +266,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                       ),
                       child: Column(
                         children: [
-                          Text(LocaleKeys.end.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                          Text(LocaleKeys.detailNighModeEnd.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                           Text("${_pickedEndTime.hour.toString().padLeft(2, '0')}:${_pickedEndTime.minute.toString().padLeft(2, '0')}", style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold))
                         ],
                       ),
@@ -275,7 +275,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                 ],
               ),
             const SizedBox(height: 30),
-            if (_functionOn["Night Mode"]!)
+            if (_functionOn["NightMode"]!)
               Align(
                 alignment: Alignment.centerRight,
                 child: Container(
@@ -283,7 +283,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                   margin: const EdgeInsets.only(right: 10),
                   decoration: const BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(5))),
                   child: MaterialButton(
-                    child: Text(LocaleKeys.set.tr(), style: const TextStyle(color: Colors.white)),
+                    child: Text(LocaleKeys.detailNighModeSet.tr(), style: const TextStyle(color: Colors.white)),
                     onPressed: () async => await widget.deviceInteractor.nightModeTime(_pickedStartTime, _pickedEndTime),
                   ),
                 ),
@@ -292,11 +292,11 @@ class _DeviceDetailState extends State<_DeviceDetail> {
         ),
       ),
       NameIconWidget(
-        LocaleKeys.hourglass.tr(),
+        LocaleKeys.detailHourglass.tr(),
         Icons.hourglass_empty,
         Column(
           children: [
-            Text(LocaleKeys.hourglass_text.tr()),
+            Text(LocaleKeys.detailHourglassText.tr()),
             const SizedBox(height: 30),
             Slider(
               value: _sliderValue,
@@ -377,7 +377,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                       height: 50,
                       margin: const EdgeInsets.symmetric(horizontal: 20),
                       decoration: const BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(5))),
-                      child: MaterialButton(child: Text(LocaleKeys.sync.tr(), style: const TextStyle(color: Colors.white)), onPressed: () => widget.deviceInteractor.syncTime(_now)),
+                      child: MaterialButton(child: Text(LocaleKeys.detailSyncTime.tr(), style: const TextStyle(color: Colors.white)), onPressed: () => widget.deviceInteractor.syncTime(_now)),
                     )
                   else
                     Container(
@@ -454,7 +454,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(margin: const EdgeInsets.only(left: 20), child: Text(LocaleKeys.more_func.tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17))),
+                Container(margin: const EdgeInsets.only(left: 20), child: Text(LocaleKeys.detailMore.tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17))),
                 const SizedBox(height: 10),
                 SizedBox(
                   height: 100,
@@ -550,10 +550,14 @@ class _DeviceDetailState extends State<_DeviceDetail> {
       context: context,
       barrierDismissible: false,
       builder: (_) => WillPopScope(
-        onWillPop: () async => false,
+        onWillPop: () async {
+          Navigator.pop(context);
+          Navigator.pop(context);
+          return true;
+        },
         child: AlertDialog(
-          title: Text(LocaleKeys.update.tr()),
-          content: Text(LocaleKeys.legacyFwText1.tr() + "\n" + LocaleKeys.legacyFwText2.tr() + "\n" + LocaleKeys.legacyFwText3.tr() + "\n" + LocaleKeys.legacyFwText4.tr()),
+          title: Text(LocaleKeys.detailUpdate.tr()),
+          content: Text(LocaleKeys.detailUpdateLegacyText.tr()),
           actions: [
             Container(
               height: 40,
@@ -592,11 +596,11 @@ class _DeviceDetailState extends State<_DeviceDetail> {
         child: StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              title: Text(LocaleKeys.update.tr()),
+              title: Text(LocaleKeys.detailUpdate.tr()),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(LocaleKeys.updateText.tr(args: [fwVer, latestFwVer])),
+                  Text(LocaleKeys.detailUpdateText.tr(args: [fwVer, latestFwVer])),
                   const SizedBox(height: 20),
                   if (widget.dfuState.dfuIsInProgress) LinearProgressIndicator(backgroundColor: Colors.grey, color: Colors.black, value: widget.dfuState.dfuPercent > 0 ? widget.dfuState.dfuPercent : null, minHeight: 7)
                 ],
@@ -613,7 +617,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                           _showingDialog = false;
                         }
                       : null,
-                  child: Text(LocaleKeys.updateButton.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                  child: Text(LocaleKeys.detailUpdateButton.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 ),
               ],
             );

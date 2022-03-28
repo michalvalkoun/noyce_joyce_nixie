@@ -62,7 +62,7 @@ class _DevicelistState extends State<_Devicelist> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) => startScan());
+    WidgetsBinding.instance?.addPostFrameCallback((_) => Future.delayed(const Duration(milliseconds: 500), startScan));
   }
 
   @override
@@ -73,13 +73,15 @@ class _DevicelistState extends State<_Devicelist> {
 
   Future<void> startScan() async {
     if (widget.bleStatus != BleStatus.ready) {
-      int tmp = await widget.checkPermissions();
-      final snackBar = SnackBar(content: Text(determineText(widget.bleStatus)), action: tmp == -1 ? SnackBarAction(label: "Settings", onPressed: () => openAppSettings()) : null);
+      int permissonsResult = await widget.checkPermissions();
+      final snackBar = SnackBar(content: Text(determineText(widget.bleStatus)), action: permissonsResult == -1 ? SnackBarAction(label: LocaleKeys.homeSettings.tr(), onPressed: () => openAppSettings()) : null);
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
     if (widget.bleStatus == BleStatus.ready) {
       if (!widget.startScan()) {
-        const snackBar = SnackBar(content: Text("Please wait, you scanned too many times.", textAlign: TextAlign.center));
+        final snackBar = SnackBar(content: Text(LocaleKeys.listBleWarning.tr(), textAlign: TextAlign.center));
+        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     }
@@ -92,7 +94,7 @@ class _DevicelistState extends State<_Devicelist> {
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(icon: const Icon(Icons.arrow_back_ios), color: Colors.black, onPressed: !widget.dfuState.dfuIsInProgress ? () => Navigator.pop(context) : () {}),
-          title: Text(LocaleKeys.click.tr(), style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold)),
+          title: Text(LocaleKeys.listTitle.tr(), style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold)),
           backgroundColor: Colors.transparent,
           centerTitle: true,
           elevation: 0,
@@ -100,7 +102,7 @@ class _DevicelistState extends State<_Devicelist> {
         body: Column(
           children: [
             Expanded(
-              child: widget.scannerState.discoveredDevices.isNotEmpty && widget.bleStatus == BleStatus.ready
+              child: widget.scannerState.discoveredDevices.isNotEmpty || !widget.scannerState.scanIsInProgress
                   ? ListView(
                       padding: const EdgeInsets.only(top: 10),
                       children: widget.scannerState.discoveredDevices
@@ -161,12 +163,12 @@ class _DevicelistState extends State<_Devicelist> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  child: const Text("Scan"),
+                  child: Text(LocaleKeys.listSearch.tr()),
                   style: ElevatedButton.styleFrom(primary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15)),
                   onPressed: !widget.scannerState.scanIsInProgress && !widget.dfuState.dfuIsInProgress ? () => startScan() : null,
                 ),
                 ElevatedButton(
-                  child: const Text("Stop"),
+                  child: Text(LocaleKeys.listStop.tr()),
                   style: ElevatedButton.styleFrom(primary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15)),
                   onPressed: widget.scannerState.scanIsInProgress && !widget.dfuState.dfuIsInProgress ? () => widget.stopScan() : null,
                 ),
@@ -182,17 +184,17 @@ class _DevicelistState extends State<_Devicelist> {
   String determineText(BleStatus status) {
     switch (status) {
       case BleStatus.unsupported:
-        return "This device does not support Bluetooth";
+        return LocaleKeys.listBleStatus1.tr();
       case BleStatus.unauthorized:
-        return "Authorize the app to use Bluetooth and location";
+        return LocaleKeys.listBleStatus2.tr();
       case BleStatus.poweredOff:
-        return "Bluetooth is powered off on your device turn it on";
+        return LocaleKeys.listBleStatus3.tr();
       case BleStatus.locationServicesDisabled:
-        return "Enable location services";
+        return LocaleKeys.listBleStatus4.tr();
       case BleStatus.ready:
-        return "Bluetooth is up and running";
-      default:
-        return "Waiting to fetch Bluetooth status $status";
+        return LocaleKeys.listBleStatus5.tr();
+      case BleStatus.unknown:
+        return LocaleKeys.listBleStatus6.tr();
     }
   }
 }
