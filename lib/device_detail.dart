@@ -164,36 +164,30 @@ class _DeviceDetailState extends State<_DeviceDetail> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                InkWell(
-                  onTap: () async {
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: _functionOn["TimeFormat"]! ? const Color(0xFFFCE9A7) : Colors.black,
+                    onPrimary: _functionOn["TimeFormat"]! ? Colors.black : Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  ),
+                  child: const Text("24 h", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                  onPressed: () async {
                     await widget.deviceInteractor.setTimeFormat(0);
                     setState(() => _functionOn["TimeFormat"] = false);
                   },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: _functionOn["TimeFormat"]! ? const Color(0xFFFCE9A7) : Colors.black,
-                      borderRadius: const BorderRadius.all(Radius.circular(5)),
-                      boxShadow: const [BoxShadow(color: Colors.black12, spreadRadius: 2, blurRadius: 3, offset: Offset(0, 2))],
-                    ),
-                    child: Column(children: [Text("24 h", style: TextStyle(color: _functionOn["TimeFormat"]! ? Colors.black : Colors.white, fontSize: 25, fontWeight: FontWeight.bold))]),
-                  ),
                 ),
                 const SizedBox(width: 30),
-                InkWell(
-                  onTap: () async {
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: !_functionOn["TimeFormat"]! ? const Color(0xFFFCE9A7) : Colors.black,
+                    onPrimary: !_functionOn["TimeFormat"]! ? Colors.black : Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  ),
+                  child: const Text("12 h", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                  onPressed: () async {
                     await widget.deviceInteractor.setTimeFormat(1);
                     setState(() => _functionOn["TimeFormat"] = true);
                   },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: _functionOn["TimeFormat"]! ? Colors.black : const Color(0xFFFCE9A7),
-                      borderRadius: const BorderRadius.all(Radius.circular(5)),
-                      boxShadow: const [BoxShadow(color: Colors.black12, spreadRadius: 2, blurRadius: 3, offset: Offset(0, 2))],
-                    ),
-                    child: Column(children: [Text("12 h", style: TextStyle(color: _functionOn["TimeFormat"]! ? Colors.white : Colors.black, fontSize: 25, fontWeight: FontWeight.bold))]),
-                  ),
                 ),
               ],
             ),
@@ -203,39 +197,39 @@ class _DeviceDetailState extends State<_DeviceDetail> {
       NameIconWidget(
         LocaleKeys.detailNightMode.tr(),
         Icons.mode_night,
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(LocaleKeys.detailNightModeText.tr()),
-            Transform.scale(
-              scale: 1.5,
-              child: Switch(
-                value: _functionOn["NightMode"]!,
-                onChanged: (value) async {
-                  await widget.deviceInteractor.setNightModeOnOff(value);
-
-                  setState(() => _functionOn["NightMode"] = value);
-                },
-                activeColor: Colors.white,
-                activeTrackColor: Colors.black,
-              ),
-            ),
-            const SizedBox(height: 20),
-            if (_functionOn["NightMode"]!)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  InkWell(
-                    onTap: () async {
-                      var time = await DatePicker.showTime12hPicker(context, currentTime: _pickedStartTime);
-                      if (time != null) setState(() => _pickedStartTime = time);
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        boxShadow: [BoxShadow(color: Colors.black12, spreadRadius: 2, blurRadius: 3, offset: Offset(0, 2))],
+                  Text(LocaleKeys.detailNightModeText.tr()),
+                  Transform.scale(
+                    scale: 1.5,
+                    child: Switch(
+                      value: _functionOn["NightMode"]!,
+                      onChanged: (value) async {
+                        await widget.deviceInteractor.setNightModeOnOff(value);
+
+                        setState(() => _functionOn["NightMode"] = value);
+                      },
+                      activeColor: Colors.white,
+                      activeTrackColor: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+              if (_functionOn["NightMode"]!)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.white,
+                        onPrimary: Colors.black,
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                       ),
                       child: Column(
                         children: [
@@ -243,20 +237,17 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                           Text("${_pickedStartTime.hour.toString().padLeft(2, '0')}:${_pickedStartTime.minute.toString().padLeft(2, '0')}", style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold))
                         ],
                       ),
+                      onPressed: () async {
+                        var time = await DatePicker.showTime12hPicker(context, currentTime: _pickedStartTime);
+                        if (time != null) setState(() => _pickedStartTime = time);
+                      },
                     ),
-                  ),
-                  const SizedBox(width: 30),
-                  InkWell(
-                    onTap: () async {
-                      var time = await DatePicker.showTime12hPicker(context, currentTime: _pickedEndTime);
-                      if (time != null) setState(() => _pickedEndTime = time);
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        boxShadow: [BoxShadow(color: Colors.black12, spreadRadius: 2, blurRadius: 3, offset: Offset(0, 2))],
+                    const SizedBox(width: 30),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.white,
+                        onPrimary: Colors.black,
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                       ),
                       child: Column(
                         children: [
@@ -264,25 +255,28 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                           Text("${_pickedEndTime.hour.toString().padLeft(2, '0')}:${_pickedEndTime.minute.toString().padLeft(2, '0')}", style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold))
                         ],
                       ),
+                      onPressed: () async {
+                        var time = await DatePicker.showTime12hPicker(context, currentTime: _pickedEndTime);
+                        if (time != null) setState(() => _pickedEndTime = time);
+                      },
                     ),
-                  ),
-                ],
-              ),
-            const SizedBox(height: 30),
-            if (_functionOn["NightMode"]!)
-              Align(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  height: 45,
-                  margin: const EdgeInsets.only(right: 10),
-                  decoration: const BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(5))),
-                  child: MaterialButton(
+                  ],
+                ),
+              if (_functionOn["NightMode"]!)
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.black,
+                      onPrimary: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    ),
                     child: Text(LocaleKeys.detailNighModeSet.tr(), style: const TextStyle(color: Colors.white)),
                     onPressed: () async => await widget.deviceInteractor.setNightModeTime(_pickedStartTime, _pickedEndTime),
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
       NameIconWidget(
@@ -312,51 +306,52 @@ class _DeviceDetailState extends State<_DeviceDetail> {
       NameIconWidget(
         LocaleKeys.detailCustomTime.tr(),
         Icons.timer,
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(LocaleKeys.detailCustomTimeText.tr()),
-            const SizedBox(height: 50),
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(primary: Colors.white, onPrimary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5)),
-                    child: Text(
-                      "${_pickedDateTime.year.toString()}-${_pickedDateTime.month.toString().padLeft(2, '0')}-${_pickedDateTime.day.toString().padLeft(2, '0')} ${_pickedDateTime.hour.toString().padLeft(2, '0')}:${_pickedDateTime.minute.toString().padLeft(2, '0')}:${_pickedDateTime.second.toString().padLeft(2, '0')}",
-                      style: const TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(LocaleKeys.detailCustomTimeText.tr()),
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(primary: Colors.white, onPrimary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5)),
+                      child: Text(
+                        "${_pickedDateTime.year.toString()}-${_pickedDateTime.month.toString().padLeft(2, '0')}-${_pickedDateTime.day.toString().padLeft(2, '0')} ${_pickedDateTime.hour.toString().padLeft(2, '0')}:${_pickedDateTime.minute.toString().padLeft(2, '0')}:${_pickedDateTime.second.toString().padLeft(2, '0')}",
+                        style: const TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+                      ),
+                      onPressed: () async {
+                        var date = await DatePicker.showDatePicker(context, currentTime: _pickedDateTime);
+                        var time = await DatePicker.showTimePicker(context, currentTime: _pickedDateTime);
+                        setState(() {
+                          if (date != null) {
+                            _pickedDateTime = DateTime(date.year, date.month, date.day, _pickedDateTime.hour, _pickedDateTime.minute, _pickedDateTime.second);
+                          }
+                          if (time != null) {
+                            _pickedDateTime = DateTime(_pickedDateTime.year, _pickedDateTime.month, _pickedDateTime.day, time.hour, time.minute, time.second);
+                          }
+                        });
+                      },
                     ),
-                    onPressed: () async {
-                      var date = await DatePicker.showDatePicker(context, currentTime: _pickedDateTime);
-                      var time = await DatePicker.showTimePicker(context, currentTime: _pickedDateTime);
-                      setState(() {
-                        if (date != null) {
-                          _pickedDateTime = DateTime(date.year, date.month, date.day, _pickedDateTime.hour, _pickedDateTime.minute, _pickedDateTime.second);
-                        }
-                        if (time != null) {
-                          _pickedDateTime = DateTime(_pickedDateTime.year, _pickedDateTime.month, _pickedDateTime.day, time.hour, time.minute, time.second);
-                        }
-                      });
-                    },
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 50),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Container(
-                height: 45,
-                margin: const EdgeInsets.only(right: 10),
-                decoration: const BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(5))),
-                child: MaterialButton(
+              Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.black,
+                    onPrimary: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  ),
                   child: Text(LocaleKeys.detailNighModeSet.tr(), style: const TextStyle(color: Colors.white)),
                   onPressed: () async => await widget.deviceInteractor.setTime(_pickedDateTime),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     ];
@@ -507,45 +502,42 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                     children: _functionItems
                         .map(
                           (fce) => widget.connectionStatus.connected && _fwCheck
-                              ? InkWell(
-                                  splashFactory: NoSplash.splashFactory,
-                                  highlightColor: Colors.transparent,
-                                  onTap: () {
-                                    setState(
-                                      () {
-                                        if (_functionNum == _functionItems.indexOf(fce)) {
-                                          if (_functionOpen) {
-                                            _functionOpen = false;
+                              ? Card(
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+                                  margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                                  child: InkWell(
+                                    borderRadius: const BorderRadius.all(Radius.circular(7)),
+                                    onTap: () {
+                                      setState(
+                                        () {
+                                          if (_functionNum == _functionItems.indexOf(fce)) {
+                                            if (_functionOpen) {
+                                              _functionOpen = false;
+                                            } else {
+                                              _functionOpen = true;
+                                              _functionsInit[_functionNum]();
+                                            }
                                           } else {
                                             _functionOpen = true;
+                                            _functionNum = _functionItems.indexOf(fce);
                                             _functionsInit[_functionNum]();
                                           }
-                                        } else {
-                                          _functionOpen = true;
-                                          _functionNum = _functionItems.indexOf(fce);
-                                          _functionsInit[_functionNum]();
-                                        }
-                                      },
-                                    );
-                                  },
-                                  child: Container(
-                                    width: 120,
-                                    margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                                      boxShadow: [BoxShadow(color: Colors.black12, spreadRadius: 1, blurRadius: 1, offset: Offset(0, 2))],
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(fce.icon, size: 30, color: _functionOpen && _functionItems.indexOf(fce) == _functionNum ? const Color(0xFFFCD205) : Colors.black),
-                                        const SizedBox(height: 10),
-                                        Text(
-                                          fce.name,
-                                          style: TextStyle(fontSize: 13, color: _functionOpen && _functionItems.indexOf(fce) == _functionNum ? const Color(0xFFFCD205) : Colors.black),
-                                        ),
-                                      ],
+                                        },
+                                      );
+                                    },
+                                    child: SizedBox(
+                                      width: 120,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(fce.icon, size: 30, color: _functionOpen && _functionItems.indexOf(fce) == _functionNum ? const Color(0xFFFCD205) : Colors.black),
+                                          const SizedBox(height: 10),
+                                          Text(
+                                            fce.name,
+                                            style: TextStyle(fontSize: 13, color: _functionOpen && _functionItems.indexOf(fce) == _functionNum ? const Color(0xFFFCD205) : Colors.black),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 )
