@@ -229,35 +229,39 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                       style: ElevatedButton.styleFrom(
                         primary: Colors.white,
                         onPrimary: Colors.black,
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                       ),
                       child: Column(
                         children: [
                           Text(LocaleKeys.detailNighModeStart.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-                          Text("${_pickedStartTime.hour.toString().padLeft(2, '0')}:${_pickedStartTime.minute.toString().padLeft(2, '0')}", style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold))
+                          Text(
+                            "${_pickedStartTime.hour.toString().padLeft(2, '0')}:${_pickedStartTime.minute.toString().padLeft(2, '0')}:${_pickedStartTime.second.toString().padLeft(2, '0')}",
+                            style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                          )
                         ],
                       ),
                       onPressed: () async {
-                        var time = await DatePicker.showTime12hPicker(context, currentTime: _pickedStartTime);
-                        if (time != null) setState(() => _pickedStartTime = time);
+                        await DatePicker.showTimePicker(context, currentTime: _pickedStartTime, showTitleActions: false, onChanged: (time) => setState(() => _pickedStartTime = time));
                       },
                     ),
-                    const SizedBox(width: 30),
+                    const SizedBox(width: 20),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         primary: Colors.white,
                         onPrimary: Colors.black,
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                       ),
                       child: Column(
                         children: [
                           Text(LocaleKeys.detailNighModeEnd.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-                          Text("${_pickedEndTime.hour.toString().padLeft(2, '0')}:${_pickedEndTime.minute.toString().padLeft(2, '0')}", style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold))
+                          Text(
+                            "${_pickedEndTime.hour.toString().padLeft(2, '0')}:${_pickedEndTime.minute.toString().padLeft(2, '0')}:${_pickedEndTime.second.toString().padLeft(2, '0')}",
+                            style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                          )
                         ],
                       ),
                       onPressed: () async {
-                        var time = await DatePicker.showTime12hPicker(context, currentTime: _pickedEndTime);
-                        if (time != null) setState(() => _pickedEndTime = time);
+                        await DatePicker.showTimePicker(context, currentTime: _pickedEndTime, showTitleActions: false, onChanged: (time) => setState(() => _pickedEndTime = time));
                       },
                     ),
                   ],
@@ -317,21 +321,17 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      style: ElevatedButton.styleFrom(primary: Colors.white, onPrimary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5)),
+                      style: ElevatedButton.styleFrom(primary: Colors.white, onPrimary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15)),
                       child: Text(
                         "${_pickedDateTime.year.toString()}-${_pickedDateTime.month.toString().padLeft(2, '0')}-${_pickedDateTime.day.toString().padLeft(2, '0')} ${_pickedDateTime.hour.toString().padLeft(2, '0')}:${_pickedDateTime.minute.toString().padLeft(2, '0')}:${_pickedDateTime.second.toString().padLeft(2, '0')}",
                         style: const TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
                       ),
                       onPressed: () async {
-                        var date = await DatePicker.showDatePicker(context, currentTime: _pickedDateTime);
-                        var time = await DatePicker.showTimePicker(context, currentTime: _pickedDateTime);
-                        setState(() {
-                          if (date != null) {
-                            _pickedDateTime = DateTime(date.year, date.month, date.day, _pickedDateTime.hour, _pickedDateTime.minute, _pickedDateTime.second);
-                          }
-                          if (time != null) {
-                            _pickedDateTime = DateTime(_pickedDateTime.year, _pickedDateTime.month, _pickedDateTime.day, time.hour, time.minute, time.second);
-                          }
+                        await DatePicker.showDatePicker(context, currentTime: _pickedDateTime, showTitleActions: false, maxTime: DateTime(2037, 12, 31), onChanged: (date) {
+                          setState(() => _pickedDateTime = DateTime(date.year, date.month, date.day, _pickedDateTime.hour, _pickedDateTime.minute, _pickedDateTime.second));
+                        });
+                        await DatePicker.showTimePicker(context, currentTime: _pickedDateTime, showTitleActions: false, onChanged: (time) {
+                          setState(() => _pickedDateTime = DateTime(_pickedDateTime.year, _pickedDateTime.month, _pickedDateTime.day, time.hour, time.minute, time.second));
                         });
                       },
                     ),
