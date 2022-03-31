@@ -329,7 +329,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                       onPressed: () async {
                         await DatePicker.showDatePicker(context, currentTime: _pickedDateTime, showTitleActions: false, maxTime: DateTime(2037, 12, 31), onChanged: (date) {
                           setState(() => _pickedDateTime = DateTime(date.year, date.month, date.day, _pickedDateTime.hour, _pickedDateTime.minute, _pickedDateTime.second));
-                        });
+                        }, locale: context.locale == const Locale("cs") ? LocaleType.cs : LocaleType.en);
                         await DatePicker.showTimePicker(context, currentTime: _pickedDateTime, showTitleActions: false, onChanged: (time) {
                           setState(() => _pickedDateTime = DateTime(_pickedDateTime.year, _pickedDateTime.month, _pickedDateTime.day, time.hour, time.minute, time.second));
                         });

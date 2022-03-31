@@ -116,8 +116,8 @@ packages:
     description:
       path: "."
       ref: master
-      resolved-ref: eb66486c47d50bf550950c196486121ffcea8885
-      url: "git@github.com:Realank/flutter_datetime_picker.git"
+      resolved-ref: "71f91a2cb8ab13dec16f871ff6b179e5a5f9695d"
+      url: "git@github.com:michalvalkoun/flutter_datetime_picker.git"
     source: git
     version: "1.5.1"
   flutter_launcher_icons:
