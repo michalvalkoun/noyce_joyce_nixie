@@ -18,6 +18,7 @@ class BleDeviceInteractor {
   late QualifiedCharacteristic _nightModeEndCharacteristic;
   late QualifiedCharacteristic _hourGlassCharacteristic;
   late QualifiedCharacteristic _blOnCharacteristic;
+  late QualifiedCharacteristic _nixieDotsCharacteristic;
 
   void discoverCharacteristics(bool initial, String deviceId) {
     if (initial) {
@@ -30,6 +31,7 @@ class BleDeviceInteractor {
       _nightModeOnOffCharacteristic = QualifiedCharacteristic(serviceId: Uuid.parse(interfaceServiceUuid), characteristicId: Uuid.parse("A8ED1423-130A-4D4B-ACBA-5DE7E77E9B47"), deviceId: deviceId);
       _nightModeStartCharacteristic = QualifiedCharacteristic(serviceId: Uuid.parse(interfaceServiceUuid), characteristicId: Uuid.parse("A8ED1425-130A-4D4B-ACBA-5DE7E77E9B47"), deviceId: deviceId);
       _nightModeEndCharacteristic = QualifiedCharacteristic(serviceId: Uuid.parse(interfaceServiceUuid), characteristicId: Uuid.parse("A8ED1424-130A-4D4B-ACBA-5DE7E77E9B47"), deviceId: deviceId);
+      _nixieDotsCharacteristic = QualifiedCharacteristic(serviceId: Uuid.parse(interfaceServiceUuid), characteristicId: Uuid.parse("A8ED1426-130A-4D4B-ACBA-5DE7E77E9B47"), deviceId: deviceId);
     }
   }
 
@@ -73,6 +75,15 @@ class BleDeviceInteractor {
       print(s);
       rethrow;
     }
+  }
+
+  Future<void> setNixieDots(int value) async {
+    await writeCharacteristic(_nixieDotsCharacteristic, [value]);
+  }
+
+  Future<bool> getNixieDots() async {
+    var data = await readCharacteristic(_nixieDotsCharacteristic);
+    return data[0] > 0 ? true : false;
   }
 
   Future<void> setNightModeOnOff(bool value) async {

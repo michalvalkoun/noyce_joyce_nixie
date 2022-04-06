@@ -63,6 +63,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
   late Timer _timer;
 
   bool _functionOpen = false;
+  bool _functionReading = false;
   bool _showingDialog = false;
   bool _fwCheck = false;
 
@@ -77,7 +78,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
   DateTime _pickedDateTime = DateTime.now();
 
   final List<String> hourGlassLabels = ['1min', '10min', '30min', '60min', '3am'];
-  final _functionOn = {"Alarm": false, "TimeFormat": false, "NightMode": false};
+  final _functionOn = {"Alarm": false, "TimeFormat": false, "NightMode": false, "NixieDots": false};
 
   @override
   void initState() {
@@ -116,7 +117,11 @@ class _DeviceDetailState extends State<_DeviceDetail> {
       () async {
         var time = await widget.deviceInteractor.getTime();
         setState(() => _pickedDateTime = time);
-      }
+      },
+      () async {
+        bool value = await widget.deviceInteractor.getNixieDots();
+        setState(() => _functionOn["NixieDots"] = value);
+      },
     ];
 
     List _functionItems = [
@@ -354,6 +359,47 @@ class _DeviceDetailState extends State<_DeviceDetail> {
           ),
         ),
       ),
+      NameIconWidget(
+        LocaleKeys.detailNixieDots.tr(),
+        Icons.bubble_chart,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(LocaleKeys.detailNixieDotsText.tr()),
+            const SizedBox(height: 70),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: _functionOn["NixieDots"]! ? const Color(0xFFFCE9A7) : Colors.black,
+                    onPrimary: _functionOn["NixieDots"]! ? Colors.black : Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  ),
+                  child: Text(LocaleKeys.detailNixieDotsOff.tr(), style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                  onPressed: () async {
+                    await widget.deviceInteractor.setNixieDots(0);
+                    setState(() => _functionOn["NixieDots"] = false);
+                  },
+                ),
+                const SizedBox(width: 30),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: !_functionOn["NixieDots"]! ? const Color(0xFFFCE9A7) : Colors.black,
+                    onPrimary: !_functionOn["NixieDots"]! ? Colors.black : Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  ),
+                  child: Text(LocaleKeys.detailNixieDotsOn.tr(), style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                  onPressed: () async {
+                    await widget.deviceInteractor.setNixieDots(1);
+                    setState(() => _functionOn["NixieDots"] = true);
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     ];
 
     return WillPopScope(
@@ -468,8 +514,8 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(_functionItems[_functionNum].name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                            const SizedBox(height: 5),
-                            _functionItems[_functionNum].widget,
+                            SizedBox(height: _functionReading ? 90 : 5),
+                            _functionReading ? const Center(child: CircularProgressIndicator(color: Colors.black)) : _functionItems[_functionNum].widget,
                           ],
                         ),
                       ),
@@ -507,23 +553,29 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                                   margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                                   child: InkWell(
                                     borderRadius: const BorderRadius.all(Radius.circular(7)),
-                                    onTap: () {
-                                      setState(
-                                        () {
-                                          if (_functionNum == _functionItems.indexOf(fce)) {
-                                            if (_functionOpen) {
-                                              _functionOpen = false;
-                                            } else {
-                                              _functionOpen = true;
-                                              _functionsInit[_functionNum]();
-                                            }
-                                          } else {
+                                    onTap: () async {
+                                      if (_functionNum == _functionItems.indexOf(fce)) {
+                                        if (_functionOpen) {
+                                          setState(() => _functionOpen = false);
+                                        } else {
+                                          setState(() {
                                             _functionOpen = true;
-                                            _functionNum = _functionItems.indexOf(fce);
-                                            _functionsInit[_functionNum]();
-                                          }
-                                        },
-                                      );
+
+                                            _functionReading = true;
+                                          });
+                                          await _functionsInit[_functionNum]();
+                                          setState(() => _functionReading = false);
+                                        }
+                                      } else {
+                                        setState(() {
+                                          _functionOpen = true;
+                                          _functionNum = _functionItems.indexOf(fce);
+
+                                          _functionReading = true;
+                                        });
+                                        await _functionsInit[_functionNum]();
+                                        setState(() => _functionReading = false);
+                                      }
                                     },
                                     child: SizedBox(
                                       width: 120,
@@ -572,12 +624,41 @@ class _DeviceDetailState extends State<_DeviceDetail> {
     if (discoveredServices[2].characteristicIds.contains(Uuid.parse("00002A26-0000-1000-8000-00805F9B34FB"))) {
       widget.deviceInteractor.discoverCharacteristics(true, widget.device.id);
       var fwVer = await widget.deviceInteractor.readFwRev();
-      if (fwVer != latestFwVer) await _showUpdateAlert(context, fwVer);
+      if (double.parse(fwVer) < double.parse(latestFwVer)) await _showUpdateAlert(context, fwVer);
+      if (double.parse(fwVer) > double.parse(latestFwVer)) await _showNewFirmwareAlert(context, fwVer);
     } else {
       await _showOldFirmwareAlert(context);
     }
     widget.deviceInteractor.discoverCharacteristics(false, widget.device.id);
     _fwCheck = true;
+  }
+
+  Future<void> _showNewFirmwareAlert(BuildContext context, String fwVer) async {
+    _showingDialog = true;
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialog(
+        title: Text(LocaleKeys.detailFwAlertNewer.tr()),
+        content: Text(LocaleKeys.detailFwAlertNewerText.tr(args: [fwVer, latestFwVer])),
+        actions: [
+          Container(
+            height: 40,
+            decoration: const BoxDecoration(color: Color(0xFFFCD205), borderRadius: BorderRadius.all(Radius.circular(5))),
+            child: MaterialButton(
+              child: const Text("OK", style: TextStyle(color: Colors.black)),
+              onPressed: () async {
+                {
+                  _showingDialog = false;
+                  Navigator.pop(context);
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _showOldFirmwareAlert(BuildContext context) async {
@@ -593,8 +674,8 @@ class _DeviceDetailState extends State<_DeviceDetail> {
           return true;
         },
         child: AlertDialog(
-          title: Text(LocaleKeys.detailUpdate.tr()),
-          content: Text(LocaleKeys.detailUpdateLegacyText.tr()),
+          title: Text(LocaleKeys.detailFwAlertUpdate.tr()),
+          content: Text(LocaleKeys.detailFwAlertLegacyText.tr()),
           actions: [
             Container(
               height: 40,
@@ -633,11 +714,11 @@ class _DeviceDetailState extends State<_DeviceDetail> {
         child: StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              title: Text(LocaleKeys.detailUpdate.tr()),
+              title: Text(LocaleKeys.detailFwAlertUpdate.tr()),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(LocaleKeys.detailUpdateText.tr(args: [fwVer, latestFwVer])),
+                  Text(LocaleKeys.detailFwAlertUpdateText.tr(args: [fwVer, latestFwVer])),
                   const SizedBox(height: 20),
                   if (widget.dfuState.dfuIsInProgress) LinearProgressIndicator(backgroundColor: Colors.grey, color: Colors.black, value: widget.dfuState.dfuPercent > 0 ? widget.dfuState.dfuPercent : null, minHeight: 7)
                 ],
@@ -654,7 +735,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                           _showingDialog = false;
                         }
                       : null,
-                  child: Text(LocaleKeys.detailUpdateButton.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                  child: Text(LocaleKeys.detailFwAlertUpdateButton.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 ),
               ],
             );

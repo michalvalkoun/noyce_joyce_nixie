@@ -37,12 +37,18 @@ abstract class  LocaleKeys {
   static const detailHourglassText = 'detailHourglassText';
   static const detailSyncTime = 'detailSyncTime';
   static const detailMore = 'detailMore';
-  static const detailUpdate = 'detailUpdate';
-  static const detailUpdateText = 'detailUpdateText';
-  static const detailUpdateButton = 'detailUpdateButton';
   static const homeSettings = 'homeSettings';
-  static const detailUpdateLegacyText = 'detailUpdateLegacyText';
   static const detailCustomTime = 'detailCustomTime';
   static const detailCustomTimeText = 'detailCustomTimeText';
+  static const detailNixieDots = 'detailNixieDots';
+  static const detailNixieDotsText = 'detailNixieDotsText';
+  static const detailNixieDotsOn = 'detailNixieDotsOn';
+  static const detailNixieDotsOff = 'detailNixieDotsOff';
+  static const detailFwAlertNewer = 'detailFwAlertNewer';
+  static const detailFwAlertNewerText = 'detailFwAlertNewerText';
+  static const detailFwAlertUpdateButton = 'detailFwAlertUpdateButton';
+  static const detailFwAlertUpdate = 'detailFwAlertUpdate';
+  static const detailFwAlertUpdateText = 'detailFwAlertUpdateText';
+  static const detailFwAlertLegacyText = 'detailFwAlertLegacyText';
 
 }
