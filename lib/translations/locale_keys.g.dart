@@ -52,5 +52,6 @@ abstract class  LocaleKeys {
   static const detailFwAlertLegacyText = 'detailFwAlertLegacyText';
   static const detailCustomTimeDate = 'detailCustomTimeDate';
   static const detailCustomTimeTime = 'detailCustomTimeTime';
+  static const listAlarmSupport = 'listAlarmSupport';
 
 }

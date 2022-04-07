@@ -126,7 +126,7 @@ class _DevicelistState extends State<_Devicelist> {
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              SizedBox(width: 165, child: Text(device.name, style: const TextStyle(fontFamily: "Abraham", fontSize: 32, height: 1))),
+                                              SizedBox(width: 165, child: Text(device.name.contains("Alarm") ? "Nixie Alarm" : device.name, style: const TextStyle(fontFamily: "Abraham", fontSize: 32, height: 1))),
                                               Text(device.id),
                                               const SizedBox(height: 20),
                                               RotatedBox(
@@ -146,7 +146,7 @@ class _DevicelistState extends State<_Devicelist> {
                                           Column(
                                             children: [
                                               const SizedBox(height: 15),
-                                              Hero(tag: device.id, child: Image.asset("assets/clock.png", fit: BoxFit.fitWidth, width: 130, height: 80)),
+                                              Hero(tag: device.id, child: Image.asset(device.name.contains("Alarm") ? "assets/alarm.png" : "assets/clock.png", fit: BoxFit.fitWidth, width: 130, height: 80)),
                                             ],
                                           ),
                                         ],
@@ -162,7 +162,13 @@ class _DevicelistState extends State<_Devicelist> {
                                     await widget.startDFU(device.id, false, setState);
                                     widget.startScan();
                                   } else if (!widget.dfuState.dfuIsInProgress) {
-                                    Navigator.push(context, MaterialPageRoute(builder: (_) => DeviceDetailScreen(device: device))).then((value) => widget.startScan());
+                                    if (device.name.contains("Alarm")) {
+                                      ScaffoldMessenger.of(context).clearSnackBars();
+                                      final snackBar = SnackBar(content: Text(LocaleKeys.listAlarmSupport.tr(), textAlign: TextAlign.center));
+                                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                    } else {
+                                      Navigator.push(context, MaterialPageRoute(builder: (_) => DeviceDetailScreen(device: device))).then((value) => widget.startScan());
+                                    }
                                   }
                                 },
                               ),

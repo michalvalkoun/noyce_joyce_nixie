@@ -40,7 +40,7 @@ class BleScanner implements ReactiveState<BleScannerState> {
     _devices.clear();
     _subscription?.cancel();
     _subscription = ble.scanForDevices(withServices: [Uuid.parse(infoServiceUuid), Uuid.parse(dfuServiceUuid)]).listen((device) {
-      if (device.name.contains("Nixie Clock")) {
+      if (device.name.contains("Nixie Clock") || device.name.contains("Nixie Alarm-Clock")) {
         final knownDeviceIndex = _devices.indexWhere((d) => d.id == device.id);
         if (knownDeviceIndex >= 0) {
           _devices[knownDeviceIndex] = device;

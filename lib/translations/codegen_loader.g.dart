@@ -65,7 +65,8 @@ class CodegenLoader extends AssetLoader{
   "detailFwAlertUpdateText": "Aby jste mohli používat všechny dostupné funkce aktualizujte si zařízení z FW {} na FW {}\n\nZařízení nesmí být spárované s telefonem při aktualizaci.",
   "detailFwAlertLegacyText": "Zařízení nesmí být spárované s telefonem při aktualizaci.\n\n1. Odpojte zařízení ze záskuvky\n2. Zapojte jej zpět se stisknutým tlačítkem MENU\n3. Vyhledejte zařízení v aplikaci\n4. Klikněte na zařízení se žlutým pozadím a počkejte",
   "detailCustomTimeDate": "Datum",
-  "detailCustomTimeTime": "Čas"
+  "detailCustomTimeTime": "Čas",
+  "listAlarmSupport": "Nixie Alarm zatím není podporovaný."
 };
 static const Map<String,dynamic> en = {
   "homeCredits": "Credits",
@@ -118,7 +119,8 @@ static const Map<String,dynamic> en = {
   "detailFwAlertUpdateText": "To use the available functions update your firmware version from FW {} to FW {}\n\nThe device must not be paired with the phone during the update.",
   "detailFwAlertLegacyText": "The device must not be paired with the phone during the update.\n\n1. Unplug your device from the outlet\n2. Plug it back in while holding the MENU button\n3. Search for devices in the app\n4. Click the device with the yellow background and wait",
   "detailCustomTimeDate": "Date",
-  "detailCustomTimeTime": "Time"
+  "detailCustomTimeTime": "Time",
+  "listAlarmSupport": "Nixie Alarm is not supported yet."
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"cs": cs, "en": en};
 }

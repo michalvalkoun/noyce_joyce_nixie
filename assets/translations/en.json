@@ -49,5 +49,6 @@
   "detailFwAlertUpdateText": "To use the available functions update your firmware version from FW {} to FW {}\n\nThe device must not be paired with the phone during the update.",
   "detailFwAlertLegacyText": "The device must not be paired with the phone during the update.\n\n1. Unplug your device from the outlet\n2. Plug it back in while holding the MENU button\n3. Search for devices in the app\n4. Click the device with the yellow background and wait",
   "detailCustomTimeDate": "Date",
-  "detailCustomTimeTime": "Time"
+  "detailCustomTimeTime": "Time",
+  "listAlarmSupport": "Nixie Alarm is not supported yet."
 }
