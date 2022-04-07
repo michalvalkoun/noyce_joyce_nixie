@@ -6,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:noyce_joyce_nixie/ble/ble_dfu.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:signal_strength_indicator/signal_strength_indicator.dart';
 
 import 'translations/locale_keys.g.dart';
 import 'ble/ble_scanner.dart';
@@ -127,7 +128,19 @@ class _DevicelistState extends State<_Devicelist> {
                                             children: [
                                               SizedBox(width: 165, child: Text(device.name, style: const TextStyle(fontFamily: "Abraham", fontSize: 32, height: 1))),
                                               Text(device.id),
-                                              Text("RSSI: ${device.rssi.toString()}"),
+                                              const SizedBox(height: 20),
+                                              RotatedBox(
+                                                quarterTurns: 4,
+                                                child: SignalStrengthIndicator.sector(
+                                                  value: device.rssi,
+                                                  barCount: 4,
+                                                  minValue: -90,
+                                                  maxValue: -50,
+                                                  size: 25,
+                                                  activeColor: Colors.black,
+                                                  inactiveColor: Colors.black12,
+                                                ),
+                                              ),
                                             ],
                                           ),
                                           Column(

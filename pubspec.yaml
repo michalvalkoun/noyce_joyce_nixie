@@ -41,6 +41,7 @@ dependencies:
     git:
       url: git@github.com:michalvalkoun/flutter_datetime_picker.git
       ref: master
+  signal_strength_indicator: ^0.4.1
 
 dev_dependencies:
   flutter_test:
