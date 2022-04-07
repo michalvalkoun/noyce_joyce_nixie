@@ -238,7 +238,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                       ),
                       child: Column(
                         children: [
-                          Text(LocaleKeys.detailNighModeStart.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                          Text(LocaleKeys.detailNighModeStart.tr(), style: const TextStyle(fontSize: 15)),
                           Text(
                             "${_pickedStartTime.hour.toString().padLeft(2, '0')}:${_pickedStartTime.minute.toString().padLeft(2, '0')}:${_pickedStartTime.second.toString().padLeft(2, '0')}",
                             style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
@@ -258,7 +258,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                       ),
                       child: Column(
                         children: [
-                          Text(LocaleKeys.detailNighModeEnd.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                          Text(LocaleKeys.detailNighModeEnd.tr(), style: const TextStyle(fontSize: 15)),
                           Text(
                             "${_pickedEndTime.hour.toString().padLeft(2, '0')}:${_pickedEndTime.minute.toString().padLeft(2, '0')}:${_pickedEndTime.second.toString().padLeft(2, '0')}",
                             style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
@@ -321,27 +321,45 @@ class _DeviceDetailState extends State<_DeviceDetail> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(LocaleKeys.detailCustomTimeText.tr()),
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(primary: Colors.white, onPrimary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15)),
-                      child: Text(
-                        "${_pickedDateTime.year.toString()}-${_pickedDateTime.month.toString().padLeft(2, '0')}-${_pickedDateTime.day.toString().padLeft(2, '0')} ${_pickedDateTime.hour.toString().padLeft(2, '0')}:${_pickedDateTime.minute.toString().padLeft(2, '0')}:${_pickedDateTime.second.toString().padLeft(2, '0')}",
-                        style: const TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
-                      ),
-                      onPressed: () async {
-                        await DatePicker.showDatePicker(context, currentTime: _pickedDateTime, showTitleActions: false, maxTime: DateTime(2037, 12, 31), onChanged: (date) {
-                          setState(() => _pickedDateTime = DateTime(date.year, date.month, date.day, _pickedDateTime.hour, _pickedDateTime.minute, _pickedDateTime.second));
-                        }, locale: context.locale == const Locale("cs") ? LocaleType.cs : LocaleType.en);
-                        await DatePicker.showTimePicker(context, currentTime: _pickedDateTime, showTitleActions: false, onChanged: (time) {
-                          setState(() => _pickedDateTime = DateTime(_pickedDateTime.year, _pickedDateTime.month, _pickedDateTime.day, time.hour, time.minute, time.second));
-                        });
-                      },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(primary: Colors.white, onPrimary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5)),
+                    child: Column(
+                      children: [
+                        Text(LocaleKeys.detailCustomTimeDate.tr(), style: const TextStyle(fontSize: 15)),
+                        Text(
+                          "${_pickedDateTime.year.toString()}-${_pickedDateTime.month.toString().padLeft(2, '0')}-${_pickedDateTime.day.toString().padLeft(2, '0')}",
+                          style: const TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                    onPressed: () async {
+                      await DatePicker.showDatePicker(context, currentTime: _pickedDateTime, showTitleActions: false, maxTime: DateTime(2037, 12, 31), onChanged: (date) {
+                        setState(() => _pickedDateTime = DateTime(date.year, date.month, date.day, _pickedDateTime.hour, _pickedDateTime.minute, _pickedDateTime.second));
+                      }, locale: context.locale == const Locale("cs") ? LocaleType.cs : LocaleType.en);
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(primary: Colors.white, onPrimary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5)),
+                    child: Column(
+                      children: [
+                        Text(LocaleKeys.detailCustomTimeTime.tr(), style: const TextStyle(fontSize: 15)),
+                        Text(
+                          "${_pickedDateTime.hour.toString().padLeft(2, '0')}:${_pickedDateTime.minute.toString().padLeft(2, '0')}:${_pickedDateTime.second.toString().padLeft(2, '0')}",
+                          style: const TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    onPressed: () async {
+                      await DatePicker.showTimePicker(context, currentTime: _pickedDateTime, showTitleActions: false, onChanged: (time) {
+                        setState(() => _pickedDateTime = DateTime(_pickedDateTime.year, _pickedDateTime.month, _pickedDateTime.day, time.hour, time.minute, time.second));
+                      });
+                    },
+                  ),
+                ],
               ),
               Align(
                 alignment: Alignment.centerRight,
