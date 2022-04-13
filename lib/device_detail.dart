@@ -637,13 +637,36 @@ class _DeviceDetailState extends State<_DeviceDetail> {
     if (!_showingDialog) Navigator.pop(context);
   }
 
+  int versionCompare(String v1, String v2) {
+    int vnum1 = 0, vnum2 = 0;
+    for (int i = 0, j = 0; i < v1.length || j < v2.length;) {
+      while (i < v1.length && v1[i] != '.') {
+        vnum1 = vnum1 * 10 + int.parse(v1[i++]);
+      }
+      while (j < v2.length && v2[j] != '.') {
+        vnum2 = vnum2 * 10 + int.parse(v2[j++]);
+      }
+      if (vnum1 > vnum2) {
+        return 1;
+      } else if (vnum2 > vnum1) {
+        return -1;
+      } else {
+        vnum1 = vnum2 = 0;
+        i++;
+        j++;
+      }
+    }
+    return 0;
+  }
+
   Future<void> _connectionReaction() async {
     var discoveredServices = await widget.deviceInteractor.discoverServices(widget.device.id);
     if (discoveredServices[2].characteristicIds.contains(Uuid.parse("00002A26-0000-1000-8000-00805F9B34FB"))) {
       widget.deviceInteractor.discoverCharacteristics(true, widget.device.id);
       var fwVer = await widget.deviceInteractor.readFwRev();
-      if (double.parse(fwVer) < double.parse(latestFwVer)) await _showUpdateAlert(context, fwVer);
-      if (double.parse(fwVer) > double.parse(latestFwVer)) await _showNewFirmwareAlert(context, fwVer);
+
+      if (versionCompare(fwVer, latestFwVer) == -1) await _showUpdateAlert(context, fwVer);
+      if (versionCompare(fwVer, latestFwVer) == 1) await _showNewFirmwareAlert(context, fwVer);
     } else {
       await _showOldFirmwareAlert(context);
     }
