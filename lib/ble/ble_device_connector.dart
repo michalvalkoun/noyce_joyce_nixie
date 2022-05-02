@@ -20,7 +20,7 @@ class BleDeviceConnector implements ReactiveState<BleConnectionState> {
   Future<void> connect(String deviceId, Function connected, Function disconnected) async {
     _deviceId = deviceId;
     logMessage('Start connecting to $deviceId');
-    _connection = ble.connectToDevice(id: deviceId).listen(
+    _connection = ble.connectToDevice(id: deviceId, connectionTimeout: const Duration(seconds: 30)).listen(
       (status) async {
         print("Connect: ${status.connectionState}");
         logMessage('ConnectionState for device $deviceId : ${status.connectionState}');
