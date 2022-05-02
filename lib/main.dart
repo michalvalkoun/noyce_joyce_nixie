@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:noyce_joyce_nixie/ble/ble_dfu.dart';
 import 'package:provider/provider.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 import 'ble/ble.dart';
 import 'translations/codegen_loader.g.dart';
@@ -53,12 +54,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      builder: (context, child) => ScrollConfiguration(behavior: MyBehavior(), child: child!),
       debugShowCheckedModeBanner: false,
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
       home: const Home(),
+      builder: (context, child) => ResponsiveWrapper.builder(
+        ScrollConfiguration(behavior: MyBehavior(), child: child!),
+        defaultScale: true,
+        defaultScaleFactor: 1.2,
+        breakpoints: const [ResponsiveBreakpoint.resize(450, name: PHONE, scaleFactor: 1.2)],
+      ),
     );
   }
 }

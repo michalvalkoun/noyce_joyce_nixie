@@ -77,7 +77,7 @@ class _DevicelistState extends State<_Devicelist> {
     if (widget.bleStatus != BleStatus.ready) {
       int permissonsResult = await widget.checkPermissions();
       if (widget.bleStatus != BleStatus.ready && widget.bleStatus != BleStatus.unknown) {
-        final snackBar = SnackBar(content: Text(determineText(widget.bleStatus)), action: permissonsResult == -1 ? SnackBarAction(label: LocaleKeys.homeSettings.tr(), onPressed: () => openAppSettings()) : null);
+        final snackBar = SnackBar(content: Text(determineText(widget.bleStatus)), action: permissonsResult == -1 ? SnackBarAction(label: LocaleKeys.listSettings.tr(), onPressed: () => openAppSettings()) : null);
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     }
@@ -121,7 +121,7 @@ class _DevicelistState extends State<_Devicelist> {
                                     children: [
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.end,
                                         children: [
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,25 +129,12 @@ class _DevicelistState extends State<_Devicelist> {
                                               SizedBox(width: 165, child: Text(device.name.contains("Alarm") ? "Nixie Alarm" : device.name, style: const TextStyle(fontFamily: "Abraham", fontSize: 32, height: 1))),
                                               Text(device.id),
                                               const SizedBox(height: 20),
-                                              RotatedBox(
-                                                quarterTurns: 4,
-                                                child: SignalStrengthIndicator.sector(
-                                                  value: device.rssi,
-                                                  barCount: 4,
-                                                  minValue: -90,
-                                                  maxValue: -50,
-                                                  size: 25,
-                                                  activeColor: Colors.black,
-                                                  inactiveColor: Colors.black12,
-                                                ),
-                                              ),
+                                              SignalStrengthIndicator.sector(value: device.rssi, barCount: 4, minValue: -90, maxValue: -50, size: 25, activeColor: Colors.black, inactiveColor: Colors.black12),
                                             ],
                                           ),
-                                          Column(
-                                            children: [
-                                              const SizedBox(height: 15),
-                                              Hero(tag: device.id, child: Image.asset(device.name.contains("Alarm") ? "assets/alarm.png" : "assets/clock.png", fit: BoxFit.fitWidth, width: 130, height: 80)),
-                                            ],
+                                          SizedBox(
+                                            width: 130,
+                                            child: Hero(tag: device.id, child: Image.asset(device.name.contains("Alarm") ? "assets/alarm.png" : "assets/clock.png", fit: BoxFit.contain, width: 130)),
                                           ),
                                         ],
                                       ),

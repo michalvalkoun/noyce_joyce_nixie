@@ -34,6 +34,7 @@
     </application>
     <uses-permission-sdk-23 android:name="android.permission.ACCESS_COARSE_LOCATION" tools:node="remove"/>
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />

@@ -1,10 +1,6 @@
 // DO NOT EDIT. This is code generated via package:easy_localization/generate.dart
 
 abstract class  LocaleKeys {
-  static const homeCredits = 'homeCredits';
-  static const homeCreditsDev = 'homeCreditsDev';
-  static const homeCreditsDes = 'homeCreditsDes';
-  static const homeCreditsFir = 'homeCreditsFir';
   static const homeVersion = 'homeVersion';
   static const homeClock = 'homeClock';
   static const homeAlarm = 'homeAlarm';
@@ -14,12 +10,9 @@ abstract class  LocaleKeys {
   static const homeShopLink = 'homeShopLink';
   static const homeWebLink = 'homeWebLink';
   static const homeManuals = 'homeManuals';
-  static const homeDownload = 'homeDownload';
-  static const homeOther = 'homeOther';
   static const listSearch = 'listSearch';
   static const listStop = 'listStop';
   static const listTitle = 'listTitle';
-  static const homeSearchTitle = 'homeSearchTitle';
   static const homeSearch = 'homeSearch';
   static const listBleStatus1 = 'listBleStatus1';
   static const listBleStatus2 = 'listBleStatus2';
@@ -37,7 +30,6 @@ abstract class  LocaleKeys {
   static const detailHourglassText = 'detailHourglassText';
   static const detailSyncTime = 'detailSyncTime';
   static const detailMore = 'detailMore';
-  static const homeSettings = 'homeSettings';
   static const detailCustomTime = 'detailCustomTime';
   static const detailCustomTimeText = 'detailCustomTimeText';
   static const detailNixieDots = 'detailNixieDots';
@@ -53,5 +45,12 @@ abstract class  LocaleKeys {
   static const detailCustomTimeDate = 'detailCustomTimeDate';
   static const detailCustomTimeTime = 'detailCustomTimeTime';
   static const listAlarmSupport = 'listAlarmSupport';
+  static const homeNews = 'homeNews';
+  static const homeManualsText = 'homeManualsText';
+  static const homeShopText = 'homeShopText';
+  static const homeNewsText = 'homeNewsText';
+  static const listSettings = 'listSettings';
+  static const newsWIFI = 'newsWIFI';
+  static const newsServer = 'newsServer';
 
 }

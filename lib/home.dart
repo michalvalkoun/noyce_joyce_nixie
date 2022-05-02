@@ -5,6 +5,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import 'translations/locale_keys.g.dart';
 import 'device_list.dart';
+import 'manuals.dart';
+import 'news.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -13,7 +15,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  String _appVersion = "Unknown";
+  String _appVersion = "0.0.0";
   @override
   void initState() {
     super.initState();
@@ -27,109 +29,104 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    List _manuals = [
-      Manual(LocaleKeys.homeClock.tr(), LocaleKeys.homeClockLink.tr()),
-      Manual(LocaleKeys.homeAlarm.tr(), LocaleKeys.homeAlarmLink.tr()),
-    ];
-    List _other = [
-      NameIconFunction(LocaleKeys.homeShop.tr(), Icons.shopping_cart, () => launch(LocaleKeys.homeShopLink.tr())),
-      NameIconFunction(LocaleKeys.homeCredits.tr(), Icons.people, () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => Credits()))),
+    List<NameIconFunction> _menu = [
+      NameIconFunction(LocaleKeys.homeManuals.tr(), LocaleKeys.homeManualsText.tr(), Icons.library_books, () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Manuals()))),
+      NameIconFunction(LocaleKeys.homeShop.tr(), LocaleKeys.homeShopText.tr(), Icons.shopping_cart, () => launch(LocaleKeys.homeShopLink.tr())),
+      NameIconFunction(LocaleKeys.homeNews.tr(), LocaleKeys.homeNewsText.tr(), Icons.fiber_new, () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const News()))),
     ];
     return Scaffold(
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(padding: const EdgeInsets.only(left: 20, top: 40), child: InkWell(child: Image.asset("assets/logo.png", scale: 7), onTap: () => launch(LocaleKeys.homeWebLink.tr()))),
-              Padding(
-                padding: const EdgeInsets.only(right: 30, top: 30),
-                child: DropdownButton(
-                    value: context.locale.toString().toUpperCase(),
-                    elevation: 1,
-                    items: ["CS", "EN"].map((value) => DropdownMenuItem(child: Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)), value: value)).toList(),
-                    onChanged: (String? value) => context.setLocale(Locale(value!.toLowerCase()))),
-              ),
-            ],
-          ),
-          const SizedBox(height: 55),
-          Padding(padding: const EdgeInsets.only(left: 20), child: Text(LocaleKeys.homeSearchTitle.tr(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
-          const SizedBox(height: 10),
-          Container(
-            width: double.infinity,
-            height: 60,
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(primary: const Color(0xFFFCD205), onPrimary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15)),
-              child: Text(LocaleKeys.homeSearch.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DeviceListScreen())),
-            ),
-          ),
-          const SizedBox(height: 40),
-          Padding(padding: const EdgeInsets.only(left: 20), child: Text(LocaleKeys.homeManuals.tr(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
-          const SizedBox(height: 10),
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: _manuals
-                  .map(
-                    (item) => Card(
-                      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(item.name, style: const TextStyle(color: Colors.black, fontFamily: "Abraham", fontSize: 25)),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(primary: const Color(0xFFFCD205), onPrimary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15)),
-                              child: Text(LocaleKeys.homeDownload.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-                              onPressed: () => launch(item.link),
-                            ),
-                          ],
-                        ),
+          Flexible(
+            flex: 3,
+            child: Material(
+              elevation: 3,
+              color: const Color(0xFFFCD205),
+              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(30)),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(padding: const EdgeInsets.only(left: 20, top: 40), child: InkWell(child: Image.asset("assets/logo.png", scale: 8), onTap: () => launch(LocaleKeys.homeWebLink.tr()))),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 20, top: 10),
+                        child: DropdownButton(
+                            icon: const Padding(padding: EdgeInsets.only(left: 15), child: Icon(Icons.arrow_forward_ios_rounded, color: Colors.black, size: 15)),
+                            underline: Container(),
+                            elevation: 1,
+                            value: context.locale.toString().toUpperCase(),
+                            items: ["CS", "EN"].map((value) => DropdownMenuItem(child: Text(value, style: const TextStyle(fontSize: 20)), value: value)).toList(),
+                            onChanged: (String? value) => context.setLocale(Locale(value!.toLowerCase()))),
                       ),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Padding(padding: const EdgeInsets.only(left: 20), child: Text(LocaleKeys.homeOther.tr(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17))),
-          const SizedBox(height: 10),
-          SizedBox(
-            height: 100,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: _other
-                  .map(
-                    (item) => Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
-                      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                      child: InkWell(
-                        borderRadius: const BorderRadius.all(Radius.circular(7)),
-                        onTap: item.function,
-                        child: SizedBox(
-                          width: 120,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(item.icon, size: 30, color: Colors.black),
-                              const SizedBox(height: 10),
-                              Text(item.name, style: const TextStyle(fontSize: 13, color: Colors.black)),
-                            ],
+                    ],
+                  ),
+                  Expanded(child: FittedBox(fit: BoxFit.contain, child: Image.asset("assets/home_devices.png", width: 280, height: 180))),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15)),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DeviceListScreen())),
+                          borderRadius: BorderRadius.circular(15),
+                          child: Container(
+                            height: 50,
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(LocaleKeys.homeSearch.tr(), style: const TextStyle(fontSize: 20)),
+                                const Icon(Icons.search, size: 32),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
                   )
-                  .toList(),
+                ],
+              ),
             ),
           ),
-          const SizedBox(height: 5),
-          Center(child: Text("${LocaleKeys.homeVersion.tr()} $_appVersion", textAlign: TextAlign.center)),
-          const SizedBox(height: 5),
+          Flexible(
+            flex: 2,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const SizedBox(height: 0),
+                const SizedBox(height: 0),
+                ..._menu.map(
+                  (item) => InkWell(
+                    borderRadius: BorderRadius.circular(10),
+                    onTap: () => item.function(),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Material(elevation: 2, borderRadius: BorderRadius.circular(10), child: Padding(padding: const EdgeInsets.all(8), child: Icon(item.icon, size: 30))),
+                        const SizedBox(width: 30),
+                        SizedBox(
+                          width: 200,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(item.name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                              Text(item.description),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(margin: const EdgeInsets.all(5), alignment: Alignment.center, child: Text("${LocaleKeys.homeVersion.tr()} $_appVersion", textAlign: TextAlign.center)),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -138,68 +135,8 @@ class _HomeState extends State<Home> {
 
 class NameIconFunction {
   final String name;
+  final String description;
   final IconData icon;
   final Function function;
-
-  const NameIconFunction(this.name, this.icon, this.function);
-}
-
-class Manual {
-  final String name;
-  final String link;
-  const Manual(this.name, this.link);
-}
-
-class CreditsName {
-  final String title1;
-  final String title2;
-  const CreditsName(this.title1, this.title2);
-}
-
-class Credits extends StatelessWidget {
-  Credits({Key? key}) : super(key: key);
-  final List _credits = [
-    CreditsName(LocaleKeys.homeCreditsDev.tr(), "Michal Valkoun"),
-    CreditsName(LocaleKeys.homeCreditsDes.tr(), "Aneta Kalousková"),
-    CreditsName(LocaleKeys.homeCreditsFir.tr(), "Ondřej Nentvich"),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_ios), color: Colors.black),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: _credits
-              .map(
-                (item) => Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: const BoxDecoration(color: Color(0xFFFCD205), borderRadius: BorderRadius.all(Radius.circular(5))),
-                  child: Stack(
-                    children: [
-                      Text(
-                        item.title1,
-                        style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 25, top: 25),
-                        child: Text(
-                          item.title2,
-                          style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-              .toList(),
-        ),
-      ),
-    );
-  }
+  const NameIconFunction(this.name, this.description, this.icon, this.function);
 }

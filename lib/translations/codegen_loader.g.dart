@@ -15,11 +15,7 @@ class CodegenLoader extends AssetLoader{
   }
 
   static const Map<String,dynamic> cs = {
-  "homeCredits": "Vývojáři",
-  "homeCreditsDev": "Vývoj",
-  "homeCreditsDes": "Design",
-  "homeCreditsFir": "Firmware",
-  "homeVersion": "App Verze",
+  "homeVersion": "App verze",
   "homeClock": "Digitronové hodiny",
   "homeAlarm": "Digitronový budík",
   "homeShop": "Obchod",
@@ -28,13 +24,10 @@ class CodegenLoader extends AssetLoader{
   "homeShopLink": "https://cs.eshop.3dsimo.com",
   "homeWebLink": "https://noycejoyce.com/cs",
   "homeManuals": "Manuály",
-  "homeDownload": "Stáhnout",
-  "homeOther": "Ostatní",
   "listSearch": "Hledej",
   "listStop": "Zastavit",
   "listTitle": "Připojte se k zařízení",
-  "homeSearchTitle": "Hledej zařízení",
-  "homeSearch": "HLEDEJ",
+  "homeSearch": "Hledej zařízení...",
   "listBleStatus1": "Toto zařízení nepodporuje Bluetooth",
   "listBleStatus2": "Povolte aplikaci použít Bluetooth a polohu",
   "listBleStatus3": "Bluetooth je vypnuté, zapněte ho",
@@ -51,7 +44,6 @@ class CodegenLoader extends AssetLoader{
   "detailHourglassText": "Přesýpací effect projede všechny číslice v digitronech. Zde si můžete nastavit v jakém intervalu se toto bude opakovat. Tato funkce prodlužuje životnost digitronů.",
   "detailSyncTime": "SYNCHRONIZOVAT ČAS",
   "detailMore": "Další funkce",
-  "homeSettings": "Nastavení",
   "detailCustomTime": "Vlastní Čas",
   "detailCustomTimeText": "Nastavte si svůj vlastní čas.",
   "detailNixieDots": "Doutnavky",
@@ -66,14 +58,17 @@ class CodegenLoader extends AssetLoader{
   "detailFwAlertLegacyText": "Zařízení musí být připojeno k telefonu, ale nesmí být spárované.\n\n1. Odpojte zařízení ze záskuvky\n2. Zapojte jej zpět se stisknutým tlačítkem MENU\n3. Vyhledejte zařízení v aplikaci\n4. Klikněte na zařízení se žlutým pozadím a počkejte",
   "detailCustomTimeDate": "Datum",
   "detailCustomTimeTime": "Čas",
-  "listAlarmSupport": "Nixie Alarm zatím není podporovaný."
+  "listAlarmSupport": "Nixie Alarm zatím není podporovaný.",
+  "homeNews": "Novinky",
+  "homeManualsText": "Produktové manuály",
+  "homeShopText": "Objevte více",
+  "homeNewsText": "Co je nového v aplikaci",
+  "listSettings": "Nastavení",
+  "newsWIFI": "Chcete-li dostávat novinky o aplikaci zapněte WIFI",
+  "newsServer": "Chyba serveru, zkuste to znovu později."
 };
 static const Map<String,dynamic> en = {
-  "homeCredits": "Credits",
-  "homeCreditsDev": "Developed by",
-  "homeCreditsDes": "Design by",
-  "homeCreditsFir": "Firmware by",
-  "homeVersion": "App Version",
+  "homeVersion": "App version",
   "homeClock": "Nixie Clock",
   "homeAlarm": "Nixie Alarm",
   "homeShop": "Shop",
@@ -82,13 +77,10 @@ static const Map<String,dynamic> en = {
   "homeShopLink": "https://eshop.3dsimo.com",
   "homeWebLink": "https://noycejoyce.com",
   "homeManuals": "Manuals",
-  "homeDownload": "Download",
-  "homeOther": "Other",
   "listSearch": "Search",
   "listStop": "Stop",
   "listTitle": "Click to connect",
-  "homeSearchTitle": "Search for devices",
-  "homeSearch": "SEARCH",
+  "homeSearch": "Search for devices...",
   "listBleStatus1": "This device does not support Bluetooth",
   "listBleStatus2": "Authorize the app to use Bluetooth and location",
   "listBleStatus3": "Bluetooth is powered off on your device, turn it on",
@@ -105,7 +97,6 @@ static const Map<String,dynamic> en = {
   "detailHourglassText": "The hourglass effect passes through all digits in the nixie tubes. Here you can set the interval at which this will be repeated. This feature extends the life of the nixie tubes.",
   "detailSyncTime": "SYNCHRONIZE TIME",
   "detailMore": "More functions",
-  "homeSettings": "Settings",
   "detailCustomTime": "Custom Time",
   "detailCustomTimeText": "Set your own time.",
   "detailNixieDots": "Nixie Dots",
@@ -120,7 +111,14 @@ static const Map<String,dynamic> en = {
   "detailFwAlertLegacyText": "The device needs to be connected to the phone but it must not be paired.\n\n1. Unplug your device from the outlet\n2. Plug it back in while holding the MENU button\n3. Search for devices in the app\n4. Click the device with the yellow background and wait",
   "detailCustomTimeDate": "Date",
   "detailCustomTimeTime": "Time",
-  "listAlarmSupport": "Nixie Alarm is not supported yet."
+  "listAlarmSupport": "Nixie Alarm is not supported yet.",
+  "homeNews": "News",
+  "homeManualsText": "Product manuals",
+  "homeShopText": "Discover more",
+  "homeNewsText": "What is new in the app",
+  "listSettings": "Settings",
+  "newsWIFI": "To get news about the app please turn on the WIFI",
+  "newsServer": "Server error, please try again later."
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"cs": cs, "en": en};
 }
