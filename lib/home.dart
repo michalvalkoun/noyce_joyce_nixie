@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'translations/locale_keys.g.dart';
 import 'device_list.dart';
+import 'device_detail.dart';
 import 'manuals.dart';
 import 'news.dart';
 
@@ -16,9 +18,11 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String _appVersion = "0.0.0";
+  String? favorite;
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) async => favorite = await hasFavorite());
     getAppVersion();
   }
 
@@ -64,31 +68,70 @@ class _HomeState extends State<Home> {
                     ],
                   ),
                   Expanded(child: FittedBox(fit: BoxFit.contain, child: Image.asset("assets/home_devices.png", width: 280, height: 180))),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 20),
-                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15)),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DeviceListScreen())),
-                          borderRadius: BorderRadius.circular(15),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
                           child: Container(
-                            height: 50,
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(LocaleKeys.homeSearch.tr(), style: const TextStyle(fontSize: 20)),
-                                const Icon(Icons.search, size: 32),
-                              ],
+                            margin: EdgeInsets.only(left: 20, right: favorite != null ? 0 : 20),
+                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.horizontal(left: const Radius.circular(15), right: Radius.circular(favorite != null ? 0 : 15))),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DeviceListScreen())).then((value) async {
+                                  var tmp = await hasFavorite();
+                                  setState(() => favorite = tmp);
+                                }),
+                                borderRadius: BorderRadius.horizontal(left: const Radius.circular(15), right: Radius.circular(favorite != null ? 0 : 15)),
+                                child: Container(
+                                  height: 50,
+                                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(LocaleKeys.homeSearch.tr(), style: const TextStyle(fontSize: 17)),
+                                      const Icon(Icons.search, size: 32),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  )
+                      if (favorite != null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: Container(
+                            margin: const EdgeInsets.only(right: 20),
+                            decoration: const BoxDecoration(color: Color(0xFFFCE9A7), borderRadius: BorderRadius.horizontal(right: Radius.circular(15))),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => DeviceDetailScreen(id: favorite!, name: "Nixie Clock"))).then((value) async {
+                                  var tmp = await hasFavorite();
+                                  setState(() => favorite = tmp);
+                                }),
+                                borderRadius: const BorderRadius.horizontal(right: Radius.circular(15)),
+                                child: Container(
+                                  height: 50,
+                                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: const [
+                                      Text("Favorite", style: TextStyle(fontSize: 17)),
+                                      Icon(Icons.favorite, size: 32),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -130,6 +173,11 @@ class _HomeState extends State<Home> {
         ],
       ),
     );
+  }
+
+  Future<String?> hasFavorite() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString("favorite_device");
   }
 }
 

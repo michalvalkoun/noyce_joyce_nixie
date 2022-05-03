@@ -154,7 +154,7 @@ class _DevicelistState extends State<_Devicelist> {
                                       final snackBar = SnackBar(content: Text(LocaleKeys.listAlarmSupport.tr(), textAlign: TextAlign.center));
                                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                                     } else {
-                                      Navigator.push(context, MaterialPageRoute(builder: (_) => DeviceDetailScreen(device: device))).then((value) => widget.startScan());
+                                      Navigator.push(context, MaterialPageRoute(builder: (_) => DeviceDetailScreen(id: device.id, name: device.name))).then((value) => widget.startScan());
                                     }
                                   }
                                 },

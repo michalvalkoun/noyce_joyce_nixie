@@ -5,6 +5,7 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'translations/locale_keys.g.dart';
 import 'ble/ble_device_connector.dart';
@@ -13,14 +14,16 @@ import 'ble/ble_dfu.dart';
 import 'constant.dart';
 
 class DeviceDetailScreen extends StatelessWidget {
-  final DiscoveredDevice device;
+  final String id;
+  final String name;
 
-  const DeviceDetailScreen({required this.device, Key? key}) : super(key: key);
+  const DeviceDetailScreen({required this.id, required this.name, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Consumer5<BleDeviceConnector, BleConnectionState, BleDeviceInteractor, BleDFU, BleDFUState?>(
         builder: (_, deviceConnector, bleConnectionState, bleDeviceInteractor, bleDFU, bleDFUState, __) => _DeviceDetail(
-          device: device,
+          id: id,
+          name: name,
           connectionStatus: bleConnectionState,
           connect: deviceConnector.connect,
           disconnect: deviceConnector.disconnect,
@@ -35,7 +38,8 @@ class DeviceDetailScreen extends StatelessWidget {
 class _DeviceDetail extends StatefulWidget {
   const _DeviceDetail({
     Key? key,
-    required this.device,
+    required this.id,
+    required this.name,
     required this.connectionStatus,
     required this.connect,
     required this.disconnect,
@@ -45,7 +49,8 @@ class _DeviceDetail extends StatefulWidget {
     required this.stopDFU,
   }) : super(key: key);
 
-  final DiscoveredDevice device;
+  final String id;
+  final String name;
   final BleConnectionState connectionStatus;
   final void Function(String deviceId, Function connected, Function disconnected) connect;
   final void Function(String deviceId) disconnect;
@@ -64,6 +69,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
   DateTime _now = DateTime.now();
   late Timer _timer;
 
+  bool favorite = false;
   bool _functionOpen = false;
   bool _functionReading = false;
   bool _showingDialog = false;
@@ -86,20 +92,22 @@ class _DeviceDetailState extends State<_DeviceDetail> {
   void initState() {
     super.initState();
     if (mounted) _timer = Timer.periodic(const Duration(milliseconds: 300), (Timer t) => setState(() => _now = DateTime.now()));
-    WidgetsBinding.instance?.addPostFrameCallback((_) => widget.connect(widget.device.id, _connectionReaction, _disconnectionReaction));
+
+    WidgetsBinding.instance?.addPostFrameCallback((_) async => favorite = await isFavorite(widget.id));
+    WidgetsBinding.instance?.addPostFrameCallback((_) => widget.connect(widget.id, _connectionReaction, _disconnectionReaction));
   }
 
   @override
   void dispose() {
     _timer.cancel();
-    widget.disconnect(widget.device.id);
+    widget.disconnect(widget.id);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     List<Function> _functionsInit = [
-      if (widget.device.name == "alarm") () async {},
+      if (widget.name == "alarm") () async {},
       () async {
         bool value = await widget.deviceInteractor.getTimeFormat();
         setState(() => _functionOn["TimeFormat"] = value);
@@ -127,7 +135,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
     ];
 
     List _functionItems = [
-      if (widget.device.name == "alarm")
+      if (widget.name == "alarm")
         NameIconWidget(
           "Alarm",
           Icons.alarm,
@@ -458,14 +466,34 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                SizedBox(width: 135, child: Text(widget.device.name, style: const TextStyle(fontFamily: "Abraham", fontSize: 50, height: 1))),
-                                Text(widget.device.id),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(width: 135, child: Text(widget.name, style: const TextStyle(fontFamily: "Abraham", fontSize: 50, height: 1))),
+                                    Text(widget.id),
+                                  ],
+                                ),
+                                TextButton(
+                                  style: TextButton.styleFrom(primary: Colors.black),
+                                  child: Icon(favorite ? Icons.favorite : Icons.favorite_border, size: 40, color: Colors.black),
+                                  onPressed: () async {
+                                    final prefs = await SharedPreferences.getInstance();
+                                    if (favorite) {
+                                      prefs.remove("favorite_device");
+                                    } else {
+                                      prefs.setString("favorite_device", widget.id.toString());
+                                    }
+                                    var tmp = await isFavorite(widget.id);
+                                    setState(() => favorite = tmp);
+                                  },
+                                ),
                               ],
                             ),
-                            Expanded(child: Center(child: SizedBox(width: 280, child: Hero(tag: widget.device.id, child: Image.asset("assets/clock.png", fit: BoxFit.contain))))),
+                            Expanded(child: Center(child: SizedBox(width: 280, child: Hero(tag: widget.id, child: Image.asset("assets/clock.png", fit: BoxFit.contain))))),
                           ],
                         ),
                       ),
@@ -520,8 +548,8 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(width: 135, child: Text(widget.device.name, style: const TextStyle(fontFamily: "Abraham", fontSize: 50, height: 1))),
-                              Text(widget.device.id),
+                              SizedBox(width: 135, child: Text(widget.name, style: const TextStyle(fontFamily: "Abraham", fontSize: 50, height: 1))),
+                              Text(widget.id),
                               const SizedBox(height: 15),
                             ],
                           ),
@@ -685,9 +713,9 @@ class _DeviceDetailState extends State<_DeviceDetail> {
   }
 
   Future<void> _connectionReaction() async {
-    var discoveredServices = await widget.deviceInteractor.discoverServices(widget.device.id);
+    var discoveredServices = await widget.deviceInteractor.discoverServices(widget.id);
     if (discoveredServices[2].characteristicIds.contains(Uuid.parse("00002A26-0000-1000-8000-00805F9B34FB"))) {
-      widget.deviceInteractor.discoverCharacteristics(true, widget.device.id);
+      widget.deviceInteractor.discoverCharacteristics(true, widget.id);
       var fwVer = await widget.deviceInteractor.readFwRev();
 
       if (versionCompare(fwVer, latestFwVer) == -1) await _showUpdateAlert(context, fwVer);
@@ -695,7 +723,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
     } else {
       await _showOldFirmwareAlert(context);
     }
-    widget.deviceInteractor.discoverCharacteristics(false, widget.device.id);
+    widget.deviceInteractor.discoverCharacteristics(false, widget.id);
     _fwCheck = true;
   }
 
@@ -795,7 +823,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                   onPressed: !widget.dfuState.dfuIsInProgress
                       ? () async {
                           await widget.deviceInteractor.blOn();
-                          await widget.startDFU(widget.device.id, true, setState);
+                          await widget.startDFU(widget.id, true, setState);
                           Navigator.pop(context);
                           Navigator.pop(context);
                           _showingDialog = false;
@@ -810,6 +838,11 @@ class _DeviceDetailState extends State<_DeviceDetail> {
       ),
     );
   }
+}
+
+Future<bool> isFavorite(String id) async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString("favorite_device") == id;
 }
 
 class NameIconWidget {
