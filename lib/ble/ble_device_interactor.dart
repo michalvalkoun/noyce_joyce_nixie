@@ -135,9 +135,14 @@ class BleDeviceInteractor {
     return data.split(' ')[2];
   }
 
-  Future<void> setTime(DateTime time) async {
+  Future<bool> setTime(DateTime time) async {
     var sendStamp = ((time.millisecondsSinceEpoch + time.timeZoneOffset.inMilliseconds) / 1000).round();
-    await writeCharacteristic(_dateTimeCharacteristic, _intToList(sendStamp));
+    try {
+      await writeCharacteristic(_dateTimeCharacteristic, _intToList(sendStamp));
+    } catch (e) {
+      return false;
+    }
+    return true;
   }
 
   Future<DateTime> getTime() async {

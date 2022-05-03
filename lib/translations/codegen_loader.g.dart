@@ -65,7 +65,8 @@ class CodegenLoader extends AssetLoader{
   "homeNewsText": "Co je nového v aplikaci",
   "listSettings": "Nastavení",
   "newsWIFI": "Chcete-li dostávat novinky o aplikaci zapněte WIFI",
-  "newsServer": "Chyba serveru, zkuste to znovu později."
+  "newsServer": "Chyba serveru, zkuste to znovu později.",
+  "detailUnpairWarning": "Chyba! Zrušte párování zařízení v nastavení Bluetooth."
 };
 static const Map<String,dynamic> en = {
   "homeVersion": "App version",
@@ -118,7 +119,8 @@ static const Map<String,dynamic> en = {
   "homeNewsText": "What is new in the app",
   "listSettings": "Settings",
   "newsWIFI": "To get news about the app please turn on the WIFI",
-  "newsServer": "Server error, please try again later."
+  "newsServer": "Server error, please try again later.",
+  "detailUnpairWarning": "Error! Unpair the device in Bluetooth settings."
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"cs": cs, "en": en};
 }

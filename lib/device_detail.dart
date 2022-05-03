@@ -481,7 +481,13 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                               decoration: const BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(10))),
                               child: MaterialButton(
                                 child: Text(LocaleKeys.detailSyncTime.tr(), style: const TextStyle(color: Colors.white)),
-                                onPressed: () => widget.deviceInteractor.setTime(_now),
+                                onPressed: () async {
+                                  bool result = await widget.deviceInteractor.setTime(_now);
+                                  if (!result) {
+                                    ScaffoldMessenger.of(context).clearSnackBars();
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(LocaleKeys.detailUnpairWarning.tr())));
+                                  }
+                                },
                               ),
                             )
                           : Container(
