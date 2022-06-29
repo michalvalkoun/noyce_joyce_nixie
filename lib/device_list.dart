@@ -63,7 +63,7 @@ class _DevicelistState extends State<_Devicelist> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) => Future.delayed(const Duration(milliseconds: 500), startScan));
+    WidgetsBinding.instance.addPostFrameCallback((_) => Future.delayed(const Duration(milliseconds: 500), startScan));
   }
 
   @override

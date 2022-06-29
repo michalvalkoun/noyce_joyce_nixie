@@ -93,8 +93,8 @@ class _DeviceDetailState extends State<_DeviceDetail> {
     super.initState();
     if (mounted) _timer = Timer.periodic(const Duration(milliseconds: 300), (Timer t) => setState(() => _now = DateTime.now()));
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) async => favorite = await isFavorite(widget.id));
-    WidgetsBinding.instance?.addPostFrameCallback((_) => widget.connect(widget.id, _connectionReaction, _disconnectionReaction));
+    WidgetsBinding.instance.addPostFrameCallback((_) async => favorite = await isFavorite(widget.id));
+    WidgetsBinding.instance.addPostFrameCallback((_) => widget.connect(widget.id, _connectionReaction, _disconnectionReaction));
   }
 
   @override
