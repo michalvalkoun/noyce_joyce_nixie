@@ -75,8 +75,8 @@ class _HomeState extends State<Home> {
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 20),
                           child: Container(
-                            margin: EdgeInsets.only(left: 20, right: favorite != null ? 0 : 20),
-                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.horizontal(left: const Radius.circular(15), right: Radius.circular(favorite != null ? 0 : 15))),
+                            margin: const EdgeInsets.only(left: 20),
+                            decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(15))),
                             child: Material(
                               color: Colors.transparent,
                               child: InkWell(
@@ -84,7 +84,7 @@ class _HomeState extends State<Home> {
                                   var tmp = await hasFavorite();
                                   setState(() => favorite = tmp);
                                 }),
-                                borderRadius: BorderRadius.horizontal(left: const Radius.circular(15), right: Radius.circular(favorite != null ? 0 : 15)),
+                                borderRadius: const BorderRadius.all(Radius.circular(15)),
                                 child: Container(
                                   height: 50,
                                   padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -105,8 +105,8 @@ class _HomeState extends State<Home> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20),
                           child: Container(
-                            margin: const EdgeInsets.only(right: 20),
-                            decoration: const BoxDecoration(color: Color(0xFFFCE9A7), borderRadius: BorderRadius.horizontal(right: Radius.circular(15))),
+                            margin: const EdgeInsets.only(left: 10),
+                            decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(15))),
                             child: Material(
                               color: Colors.transparent,
                               child: InkWell(
@@ -114,22 +114,13 @@ class _HomeState extends State<Home> {
                                   var tmp = await hasFavorite();
                                   setState(() => favorite = tmp);
                                 }),
-                                borderRadius: const BorderRadius.horizontal(right: Radius.circular(15)),
-                                child: Container(
-                                  height: 50,
-                                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: const [
-                                      Text("Favorite", style: TextStyle(fontSize: 17)),
-                                      Icon(Icons.favorite, size: 32),
-                                    ],
-                                  ),
-                                ),
+                                borderRadius: const BorderRadius.all(Radius.circular(15)),
+                                child: const SizedBox(height: 50, width: 50, child: Icon(Icons.favorite, size: 30)),
                               ),
                             ),
                           ),
                         ),
+                      const SizedBox(width: 20),
                     ],
                   ),
                 ],
