@@ -1,22 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:permission_handler/permission_handler.dart';
 
+import 'ble/ble_scanner.dart';
 import 'translations/locale_keys.g.dart';
 import 'device_list.dart';
 import 'device_detail.dart';
 import 'manuals.dart';
 import 'news.dart';
 
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
   @override
-  State<Home> createState() => _HomeState();
+  Widget build(BuildContext context) {
+    return Consumer2<BleStatus?, BleScanner>(
+      builder: (_, bleStatus, bleScanner, __) => _Home(
+        bleStatus: bleStatus ?? BleStatus.unknown,
+        checkPermissions: bleScanner.checkPermissions,
+        determineText: bleScanner.determineText,
+      ),
+    );
+  }
 }
 
-class _HomeState extends State<Home> {
+class _Home extends StatefulWidget {
+  const _Home({
+    required this.bleStatus,
+    required this.checkPermissions,
+    required this.determineText,
+    Key? key,
+  }) : super(key: key);
+  final BleStatus bleStatus;
+  final Function() checkPermissions;
+  final Function(BleStatus) determineText;
+
+  @override
+  State<_Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<_Home> {
   String _appVersion = "0.0.0";
   String? favorite;
   @override
@@ -110,10 +138,22 @@ class _HomeState extends State<Home> {
                             child: Material(
                               color: Colors.transparent,
                               child: InkWell(
-                                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => DeviceDetailScreen(id: favorite!, name: "Nixie Clock"))).then((value) async {
-                                  var tmp = await hasFavorite();
-                                  setState(() => favorite = tmp);
-                                }),
+                                onTap: () async {
+                                  ScaffoldMessenger.of(context).clearSnackBars();
+                                  if (widget.bleStatus != BleStatus.ready) {
+                                    int permissonsResult = await widget.checkPermissions();
+                                    if (widget.bleStatus != BleStatus.ready && widget.bleStatus != BleStatus.unknown) {
+                                      final snackBar = SnackBar(content: Text(widget.determineText(widget.bleStatus)), action: permissonsResult == -1 ? SnackBarAction(label: LocaleKeys.listSettings.tr(), onPressed: () => openAppSettings()) : null);
+                                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                    }
+                                  }
+                                  if (widget.bleStatus == BleStatus.ready) {
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => DeviceDetailScreen(id: favorite!, name: "Nixie Clock"))).then((value) async {
+                                      var tmp = await hasFavorite();
+                                      setState(() => favorite = tmp);
+                                    });
+                                  }
+                                },
                                 borderRadius: const BorderRadius.all(Radius.circular(15)),
                                 child: const SizedBox(height: 50, width: 50, child: Icon(Icons.favorite, size: 30)),
                               ),

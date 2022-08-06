@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      home: const Home(),
+      home: const HomeScreen(),
       builder: (context, child) => ResponsiveWrapper.builder(
         ScrollConfiguration(behavior: MyBehavior(), child: child!),
         defaultScale: true,

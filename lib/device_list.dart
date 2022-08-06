@@ -25,6 +25,7 @@ class DeviceListScreen extends StatelessWidget {
         startScan: bleScanner.startScan,
         stopScan: bleScanner.stopScan,
         checkPermissions: bleScanner.checkPermissions,
+        determineText: bleScanner.determineText,
         dfuState: bleDFUState ?? const BleDFUState(),
         startDFU: bleDFU.startDFU,
         stopDFU: bleDFU.stopDFU,
@@ -40,6 +41,7 @@ class _Devicelist extends StatefulWidget {
     required this.startScan,
     required this.stopScan,
     required this.checkPermissions,
+    required this.determineText,
     required this.dfuState,
     required this.startDFU,
     required this.stopDFU,
@@ -51,6 +53,7 @@ class _Devicelist extends StatefulWidget {
   final Function() startScan;
   final VoidCallback stopScan;
   final Function() checkPermissions;
+  final Function(BleStatus) determineText;
   final BleDFUState dfuState;
   final Function(String, bool, StateSetter) startDFU;
   final Function(StateSetter) stopDFU;
@@ -77,7 +80,7 @@ class _DevicelistState extends State<_Devicelist> {
     if (widget.bleStatus != BleStatus.ready) {
       int permissonsResult = await widget.checkPermissions();
       if (widget.bleStatus != BleStatus.ready && widget.bleStatus != BleStatus.unknown) {
-        final snackBar = SnackBar(content: Text(determineText(widget.bleStatus)), action: permissonsResult == -1 ? SnackBarAction(label: LocaleKeys.listSettings.tr(), onPressed: () => openAppSettings()) : null);
+        final snackBar = SnackBar(content: Text(widget.determineText(widget.bleStatus)), action: permissonsResult == -1 ? SnackBarAction(label: LocaleKeys.listSettings.tr(), onPressed: () => openAppSettings()) : null);
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     }
@@ -186,20 +189,5 @@ class _DevicelistState extends State<_Devicelist> {
         ),
       ),
     );
-  }
-
-  String determineText(BleStatus status) {
-    switch (status) {
-      case BleStatus.unsupported:
-        return LocaleKeys.listBleStatus1.tr();
-      case BleStatus.unauthorized:
-        return LocaleKeys.listBleStatus2.tr();
-      case BleStatus.poweredOff:
-        return LocaleKeys.listBleStatus3.tr();
-      case BleStatus.locationServicesDisabled:
-        return LocaleKeys.listBleStatus4.tr();
-      default:
-        return "";
-    }
   }
 }

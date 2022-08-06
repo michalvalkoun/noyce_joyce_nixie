@@ -5,6 +5,8 @@ import 'reactive_state.dart';
 import 'package:meta/meta.dart';
 import 'package:noyce_joyce_nixie/constant.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:noyce_joyce_nixie/translations/locale_keys.g.dart';
 
 class BleScanner implements ReactiveState<BleScannerState> {
   BleScanner({required this.ble, required this.logMessage});
@@ -60,6 +62,21 @@ class BleScanner implements ReactiveState<BleScannerState> {
     await _subscription?.cancel();
     _subscription = null;
     _pushState();
+  }
+
+  String determineText(BleStatus status) {
+    switch (status) {
+      case BleStatus.unsupported:
+        return LocaleKeys.listBleStatus1.tr();
+      case BleStatus.unauthorized:
+        return LocaleKeys.listBleStatus2.tr();
+      case BleStatus.poweredOff:
+        return LocaleKeys.listBleStatus3.tr();
+      case BleStatus.locationServicesDisabled:
+        return LocaleKeys.listBleStatus4.tr();
+      default:
+        return "";
+    }
   }
 
   Future<void> dispose() async {
