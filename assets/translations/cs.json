@@ -50,5 +50,6 @@
   "listSettings": "Nastavení",
   "newsWIFI": "Chcete-li dostávat novinky o aplikaci zapněte WIFI",
   "newsServer": "Chyba serveru, zkuste to znovu později.",
-  "detailUnpairWarning": "Chyba! Zrušte párování zařízení v nastavení Bluetooth."
+  "detailUnpairWarning": "Chyba! Zrušte párování zařízení v nastavení Bluetooth.",
+  "newsLicense": "Licence "
 }

@@ -50,5 +50,6 @@
   "listSettings": "Settings",
   "newsWIFI": "To get news about the app please turn on the WIFI",
   "newsServer": "Server error, please try again later.",
-  "detailUnpairWarning": "Error! Unpair the device in Bluetooth settings."
+  "detailUnpairWarning": "Error! Unpair the device in Bluetooth settings.",
+  "newsLicense": "License"
 }

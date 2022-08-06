@@ -53,5 +53,6 @@ abstract class  LocaleKeys {
   static const newsWIFI = 'newsWIFI';
   static const newsServer = 'newsServer';
   static const detailUnpairWarning = 'detailUnpairWarning';
+  static const newsLicense = 'newsLicense';
 
 }
