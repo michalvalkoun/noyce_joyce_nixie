@@ -4,10 +4,8 @@ abstract class  LocaleKeys {
   static const homeVersion = 'homeVersion';
   static const homeClock = 'homeClock';
   static const homeAlarm = 'homeAlarm';
-  static const homeShop = 'homeShop';
   static const homeClockLink = 'homeClockLink';
   static const homeAlarmLink = 'homeAlarmLink';
-  static const homeShopLink = 'homeShopLink';
   static const homeWebLink = 'homeWebLink';
   static const homeManuals = 'homeManuals';
   static const listSearch = 'listSearch';
@@ -47,12 +45,12 @@ abstract class  LocaleKeys {
   static const listAlarmSupport = 'listAlarmSupport';
   static const homeNews = 'homeNews';
   static const homeManualsText = 'homeManualsText';
-  static const homeShopText = 'homeShopText';
   static const homeNewsText = 'homeNewsText';
   static const listSettings = 'listSettings';
   static const newsWIFI = 'newsWIFI';
   static const newsServer = 'newsServer';
   static const detailUnpairWarning = 'detailUnpairWarning';
-  static const newsLicense = 'newsLicense';
+  static const homePrivacy = 'homePrivacy';
+  static const homePrivacyText = 'homePrivacyText';
 
 }

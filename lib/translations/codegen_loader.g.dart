@@ -18,10 +18,8 @@ class CodegenLoader extends AssetLoader{
   "homeVersion": "App verze",
   "homeClock": "Digitronové hodiny",
   "homeAlarm": "Digitronový budík",
-  "homeShop": "Obchod",
   "homeClockLink": "https://noycejoyce.com/media/pages/support/411181fbbd-1636027647/nixie-clock_manual_cz_online.pdf",
   "homeAlarmLink": "https://noycejoyce.com/media/pages/support/c450b16819-1639150730/nixie-alarm-manual_cz_2_web.pdf",
-  "homeShopLink": "https://cs.eshop.3dsimo.com",
   "homeWebLink": "https://noycejoyce.com/cs",
   "homeManuals": "Manuály",
   "listSearch": "Hledej",
@@ -61,22 +59,20 @@ class CodegenLoader extends AssetLoader{
   "listAlarmSupport": "Nixie Alarm zatím není podporovaný.",
   "homeNews": "Novinky",
   "homeManualsText": "Produktové manuály",
-  "homeShopText": "Objevte více",
   "homeNewsText": "Co je nového v aplikaci",
   "listSettings": "Nastavení",
   "newsWIFI": "Chcete-li dostávat novinky o aplikaci zapněte WIFI",
   "newsServer": "Chyba serveru, zkuste to znovu později.",
   "detailUnpairWarning": "Chyba! Zrušte párování zařízení v nastavení Bluetooth.",
-  "newsLicense": "Licence "
+  "homePrivacy": "Osobní údaje",
+  "homePrivacyText": "Ochrana osobních údajů"
 };
 static const Map<String,dynamic> en = {
   "homeVersion": "App version",
   "homeClock": "Nixie Clock",
   "homeAlarm": "Nixie Alarm",
-  "homeShop": "Shop",
   "homeClockLink": "https://noycejoyce.com/media/pages/support/e048fd2201-1636027647/nixie-clock_manual_eng_online.pdf",
   "homeAlarmLink": "https://noycejoyce.com/media/pages/support/59b17f0f91-1639150730/nixie-alarm-manual_eng_2_web.pdf",
-  "homeShopLink": "https://eshop.3dsimo.com",
   "homeWebLink": "https://noycejoyce.com",
   "homeManuals": "Manuals",
   "listSearch": "Search",
@@ -116,13 +112,13 @@ static const Map<String,dynamic> en = {
   "listAlarmSupport": "Nixie Alarm is not supported yet.",
   "homeNews": "News",
   "homeManualsText": "Product manuals",
-  "homeShopText": "Discover more",
   "homeNewsText": "What is new in the app",
   "listSettings": "Settings",
   "newsWIFI": "To get news about the app please turn on the WIFI",
   "newsServer": "Server error, please try again later.",
   "detailUnpairWarning": "Error! Unpair the device in Bluetooth settings.",
-  "newsLicense": "License"
+  "homePrivacy": "Privacy policy",
+  "homePrivacyText": "Our privacy policy"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"cs": cs, "en": en};
 }

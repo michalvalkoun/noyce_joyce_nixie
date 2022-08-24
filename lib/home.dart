@@ -63,8 +63,8 @@ class _HomeState extends State<_Home> {
   Widget build(BuildContext context) {
     List<NameIconFunction> _menu = [
       NameIconFunction(LocaleKeys.homeManuals.tr(), LocaleKeys.homeManualsText.tr(), Icons.library_books, () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Manuals()))),
-      NameIconFunction(LocaleKeys.homeShop.tr(), LocaleKeys.homeShopText.tr(), Icons.shopping_cart, () => launch(LocaleKeys.homeShopLink.tr())),
       NameIconFunction(LocaleKeys.homeNews.tr(), LocaleKeys.homeNewsText.tr(), Icons.fiber_new, () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const News()))),
+      NameIconFunction(LocaleKeys.homePrivacy.tr(), LocaleKeys.homePrivacyText.tr(), Icons.privacy_tip, () => launch("https://sites.google.com/view/noycejoycenixie")),
     ];
     return Scaffold(
       body: Column(

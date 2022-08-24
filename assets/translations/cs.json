@@ -2,10 +2,8 @@
   "homeVersion": "App verze",
   "homeClock": "Digitronové hodiny",
   "homeAlarm": "Digitronový budík",
-  "homeShop": "Obchod",
   "homeClockLink": "https://noycejoyce.com/media/pages/support/411181fbbd-1636027647/nixie-clock_manual_cz_online.pdf",
   "homeAlarmLink": "https://noycejoyce.com/media/pages/support/c450b16819-1639150730/nixie-alarm-manual_cz_2_web.pdf",
-  "homeShopLink": "https://cs.eshop.3dsimo.com",
   "homeWebLink": "https://noycejoyce.com/cs",
   "homeManuals": "Manuály",
   "listSearch": "Hledej",
@@ -45,11 +43,11 @@
   "listAlarmSupport": "Nixie Alarm zatím není podporovaný.",
   "homeNews": "Novinky",
   "homeManualsText": "Produktové manuály",
-  "homeShopText": "Objevte více",
   "homeNewsText": "Co je nového v aplikaci",
   "listSettings": "Nastavení",
   "newsWIFI": "Chcete-li dostávat novinky o aplikaci zapněte WIFI",
   "newsServer": "Chyba serveru, zkuste to znovu později.",
   "detailUnpairWarning": "Chyba! Zrušte párování zařízení v nastavení Bluetooth.",
-  "newsLicense": "Licence "
+  "homePrivacy": "Osobní údaje",
+  "homePrivacyText": "Ochrana osobních údajů"
 }
