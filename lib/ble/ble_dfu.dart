@@ -25,14 +25,14 @@ class BleDFU implements ReactiveState<BleDFUState> {
     _pushState(setState);
 
     try {
-      await NordicDfu.startDfu(
+      await NordicDfu().startDfu(
         incMac ? _incMac(mac: deviceId) : deviceId,
         "assets/$latestFwVer.zip",
         fileInAsset: true,
-        progressListener: DefaultDfuProgressListenerAdapter(onProgressChangedHandle: (deviceAddress, percent, speed, avgSpeed, currentPart, partsTotal) {
-          _dfuPercent = percent! / 100;
+        onProgressChanged: (deviceAddress, percent, speed, avgSpeed, currentPart, partsTotal) {
+          _dfuPercent = percent / 100;
           _pushState(setState);
-        }),
+        },
       );
     } catch (error) {
       logMessage('DFU fails with error: $error');
@@ -44,7 +44,7 @@ class BleDFU implements ReactiveState<BleDFUState> {
   }
 
   Future<void> stopDFU(setState) async {
-    await NordicDfu.abortDfu();
+    await NordicDfu().abortDfu();
     _dfuIsInProgress = false;
     _dfuPercent = 0.0;
     _adress = "";

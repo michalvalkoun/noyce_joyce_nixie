@@ -61,10 +61,10 @@ class _HomeState extends State<_Home> {
 
   @override
   Widget build(BuildContext context) {
-    List<NameIconFunction> _menu = [
+    List<NameIconFunction> menu = [
       NameIconFunction(LocaleKeys.homeManuals.tr(), LocaleKeys.homeManualsText.tr(), Icons.library_books, () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Manuals()))),
       NameIconFunction(LocaleKeys.homeNews.tr(), LocaleKeys.homeNewsText.tr(), Icons.fiber_new, () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const News()))),
-      NameIconFunction(LocaleKeys.homePrivacy.tr(), LocaleKeys.homePrivacyText.tr(), Icons.privacy_tip, () => launch("https://sites.google.com/view/noycejoycenixie")),
+      NameIconFunction(LocaleKeys.homePrivacy.tr(), LocaleKeys.homePrivacyText.tr(), Icons.privacy_tip, () => launchUrl(Uri.parse("https://sites.google.com/view/noycejoycenixie"))),
     ];
     return Scaffold(
       body: Column(
@@ -82,7 +82,7 @@ class _HomeState extends State<_Home> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Padding(padding: const EdgeInsets.only(left: 20, top: 40), child: InkWell(child: Image.asset("assets/logo.png", scale: 8), onTap: () => launch(LocaleKeys.homeWebLink.tr()))),
+                      Padding(padding: const EdgeInsets.only(left: 20, top: 40), child: InkWell(child: Image.asset("assets/logo.png", scale: 8), onTap: () => launchUrl(Uri.parse(LocaleKeys.homeWebLink.tr())))),
                       Padding(
                         padding: const EdgeInsets.only(right: 20, top: 10),
                         child: DropdownButton(
@@ -90,7 +90,7 @@ class _HomeState extends State<_Home> {
                             underline: Container(),
                             elevation: 1,
                             value: context.locale.toString().toUpperCase(),
-                            items: ["CS", "EN"].map((value) => DropdownMenuItem(child: Text(value, style: const TextStyle(fontSize: 20)), value: value)).toList(),
+                            items: ["CS", "EN"].map((value) => DropdownMenuItem(value: value, child: Text(value, style: const TextStyle(fontSize: 20)))).toList(),
                             onChanged: (String? value) => context.setLocale(Locale(value!.toLowerCase()))),
                       ),
                     ],
@@ -143,11 +143,14 @@ class _HomeState extends State<_Home> {
                                   if (widget.bleStatus != BleStatus.ready) {
                                     int permissonsResult = await widget.checkPermissions();
                                     if (widget.bleStatus != BleStatus.ready && widget.bleStatus != BleStatus.unknown) {
-                                      final snackBar = SnackBar(content: Text(widget.determineText(widget.bleStatus)), action: permissonsResult == -1 ? SnackBarAction(label: LocaleKeys.listSettings.tr(), onPressed: () => openAppSettings()) : null);
-                                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                      if (!mounted) return;
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text(widget.determineText(widget.bleStatus)), action: permissonsResult == -1 ? SnackBarAction(label: LocaleKeys.listSettings.tr(), onPressed: () => openAppSettings()) : null),
+                                      );
                                     }
                                   }
                                   if (widget.bleStatus == BleStatus.ready) {
+                                    if (!mounted) return;
                                     Navigator.of(context).push(MaterialPageRoute(builder: (context) => DeviceDetailScreen(id: favorite!, name: "Nixie Clock"))).then((value) async {
                                       var tmp = await hasFavorite();
                                       setState(() => favorite = tmp);
@@ -174,7 +177,7 @@ class _HomeState extends State<_Home> {
               children: [
                 const SizedBox(height: 0),
                 const SizedBox(height: 0),
-                ..._menu.map(
+                ...menu.map(
                   (item) => InkWell(
                     borderRadius: BorderRadius.circular(10),
                     onTap: () => item.function(),

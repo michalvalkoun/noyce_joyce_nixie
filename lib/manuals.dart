@@ -15,7 +15,7 @@ class Manuals extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List _manuals = [
+    List manuals = [
       Manual("NIXIE CLOCK", LocaleKeys.homeClockLink.tr()),
       Manual("NIXIE ALARM", LocaleKeys.homeAlarmLink.tr()),
     ];
@@ -30,14 +30,14 @@ class Manuals extends StatelessWidget {
       ),
       body: ListView(
         padding: const EdgeInsets.only(top: 20),
-        children: _manuals
+        children: manuals
             .map(
               (item) => Card(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
                 margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
                 child: InkWell(
                   borderRadius: const BorderRadius.all(Radius.circular(7)),
-                  onTap: () => launch(item.link),
+                  onTap: () => launchUrl(Uri.parse(item.link)),
                   child: Padding(
                     padding: const EdgeInsets.all(10),
                     child: Row(

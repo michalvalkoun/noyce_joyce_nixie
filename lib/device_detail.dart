@@ -106,7 +106,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
 
   @override
   Widget build(BuildContext context) {
-    List<Function> _functionsInit = [
+    List<Function> functionsInit = [
       if (widget.name == "alarm") () async {},
       () async {
         bool value = await widget.deviceInteractor.getTimeFormat();
@@ -134,7 +134,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
       },
     ];
 
-    List _functionItems = [
+    List functionItems = [
       if (widget.name == "alarm")
         NameIconWidget(
           "Alarm",
@@ -182,8 +182,8 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: _functionOn["TimeFormat"]! ? const Color(0xFFFCE9A7) : Colors.black,
-                      onPrimary: _functionOn["TimeFormat"]! ? Colors.black : Colors.white,
+                      backgroundColor: _functionOn["TimeFormat"]! ? const Color(0xFFFCE9A7) : Colors.black,
+                      foregroundColor: _functionOn["TimeFormat"]! ? Colors.black : Colors.white,
                       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                     ),
                     child: const Text("24 h", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
@@ -195,8 +195,8 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                   const SizedBox(width: 30),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: !_functionOn["TimeFormat"]! ? const Color(0xFFFCE9A7) : Colors.black,
-                      onPrimary: !_functionOn["TimeFormat"]! ? Colors.black : Colors.white,
+                      backgroundColor: !_functionOn["TimeFormat"]! ? const Color(0xFFFCE9A7) : Colors.black,
+                      foregroundColor: !_functionOn["TimeFormat"]! ? Colors.black : Colors.white,
                       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                     ),
                     child: const Text("12 h", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
@@ -243,7 +243,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
-                      style: ElevatedButton.styleFrom(primary: Colors.white, onPrimary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5)),
+                      style: ElevatedButton.styleFrom(foregroundColor: Colors.black, backgroundColor: Colors.white, padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5)),
                       child: Column(
                         children: [
                           Text(LocaleKeys.detailNighModeStart.tr(), style: const TextStyle(fontSize: 15)),
@@ -256,7 +256,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                       onPressed: () async => await DatePicker.showTimePicker(context, currentTime: _pickedStartTime, showTitleActions: false, onChanged: (time) => setState(() => _pickedStartTime = time)),
                     ),
                     ElevatedButton(
-                      style: ElevatedButton.styleFrom(primary: Colors.white, onPrimary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5)),
+                      style: ElevatedButton.styleFrom(foregroundColor: Colors.black, backgroundColor: Colors.white, padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5)),
                       child: Column(
                         children: [
                           Text(LocaleKeys.detailNighModeEnd.tr(), style: const TextStyle(fontSize: 15)),
@@ -274,7 +274,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(primary: Colors.black, minimumSize: Size.zero, padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12)),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.black, minimumSize: Size.zero, padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12)),
                     child: Text(LocaleKeys.detailNighModeSet.tr(), style: const TextStyle(fontSize: 17, color: Colors.white)),
                     onPressed: () async => await widget.deviceInteractor.setNightModeTime(_pickedStartTime, _pickedEndTime),
                   ),
@@ -327,7 +327,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
-                    style: ElevatedButton.styleFrom(primary: Colors.white, onPrimary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5)),
+                    style: ElevatedButton.styleFrom(foregroundColor: Colors.black, backgroundColor: Colors.white, padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5)),
                     child: Column(
                       children: [
                         Text(LocaleKeys.detailCustomTimeDate.tr(), style: const TextStyle(fontSize: 15)),
@@ -344,7 +344,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                     },
                   ),
                   ElevatedButton(
-                    style: ElevatedButton.styleFrom(primary: Colors.white, onPrimary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5)),
+                    style: ElevatedButton.styleFrom(foregroundColor: Colors.black, backgroundColor: Colors.white, padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5)),
                     child: Column(
                       children: [
                         Text(LocaleKeys.detailCustomTimeTime.tr(), style: const TextStyle(fontSize: 15)),
@@ -366,7 +366,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
               Align(
                 alignment: Alignment.centerRight,
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: Colors.black, minimumSize: Size.zero, padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12)),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.black, minimumSize: Size.zero, padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12)),
                   child: Text(LocaleKeys.detailNighModeSet.tr(), style: const TextStyle(fontSize: 17, color: Colors.white)),
                   onPressed: () async => await widget.deviceInteractor.setTime(_pickedDateTime),
                 ),
@@ -389,8 +389,8 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: _functionOn["NixieDots"]! ? const Color(0xFFFCE9A7) : Colors.black,
-                      onPrimary: _functionOn["NixieDots"]! ? Colors.black : Colors.white,
+                      foregroundColor: _functionOn["NixieDots"]! ? Colors.black : Colors.white,
+                      backgroundColor: _functionOn["NixieDots"]! ? const Color(0xFFFCE9A7) : Colors.black,
                       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                     ),
                     child: Text(LocaleKeys.detailNixieDotsOff.tr(), style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
@@ -402,8 +402,8 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                   const SizedBox(width: 30),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: !_functionOn["NixieDots"]! ? const Color(0xFFFCE9A7) : Colors.black,
-                      onPrimary: !_functionOn["NixieDots"]! ? Colors.black : Colors.white,
+                      foregroundColor: !_functionOn["NixieDots"]! ? Colors.black : Colors.white,
+                      backgroundColor: !_functionOn["NixieDots"]! ? const Color(0xFFFCE9A7) : Colors.black,
                       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                     ),
                     child: Text(LocaleKeys.detailNixieDotsOn.tr(), style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
@@ -478,7 +478,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                                   ],
                                 ),
                                 TextButton(
-                                  style: TextButton.styleFrom(primary: Colors.black),
+                                  style: TextButton.styleFrom(foregroundColor: Colors.black),
                                   child: Icon(favorite ? Icons.favorite : Icons.favorite_border, size: 40, color: Colors.black),
                                   onPressed: () async {
                                     final prefs = await SharedPreferences.getInstance();
@@ -512,6 +512,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                                 onPressed: () async {
                                   bool result = await widget.deviceInteractor.setTime(_now);
                                   if (!result) {
+                                    if (!mounted) return;
                                     ScaffoldMessenger.of(context).clearSnackBars();
                                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(LocaleKeys.detailUnpairWarning.tr())));
                                   }
@@ -569,9 +570,9 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(_functionItems[_functionNum].name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                                Text(functionItems[_functionNum].name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
                                 SizedBox(height: _functionReading ? 90 : 5),
-                                _functionReading ? const Center(child: CircularProgressIndicator(color: Colors.black)) : _functionItems[_functionNum].widget,
+                                _functionReading ? const Center(child: CircularProgressIndicator(color: Colors.black)) : functionItems[_functionNum].widget,
                               ],
                             ),
                           ),
@@ -585,7 +586,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                                 shape: BoxShape.circle,
                                 boxShadow: [BoxShadow(color: Colors.black12, spreadRadius: 2, blurRadius: 3, offset: Offset(0, 2))],
                               ),
-                              child: Icon(_functionItems[_functionNum].icon, size: 30),
+                              child: Icon(functionItems[_functionNum].icon, size: 30),
                             ),
                           ),
                         ],
@@ -612,16 +613,16 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                         child: ListView(
                           controller: _scrollController,
                           scrollDirection: Axis.horizontal,
-                          children: _functionItems
+                          children: functionItems
                               .map(
                                 (fce) => widget.connectionStatus.connected && _fwCheck
                                     ? Card(
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
-                                        margin: EdgeInsets.only(top: 5, bottom: 5, right: _functionItems.indexOf(fce) == _functionItems.length - 1 ? 0 : 10),
+                                        margin: EdgeInsets.only(top: 5, bottom: 5, right: functionItems.indexOf(fce) == functionItems.length - 1 ? 0 : 10),
                                         child: InkWell(
                                           borderRadius: const BorderRadius.all(Radius.circular(7)),
                                           onTap: () async {
-                                            if (_functionNum == _functionItems.indexOf(fce)) {
+                                            if (_functionNum == functionItems.indexOf(fce)) {
                                               if (_functionOpen) {
                                                 setState(() => _functionOpen = false);
                                               } else {
@@ -630,17 +631,17 @@ class _DeviceDetailState extends State<_DeviceDetail> {
 
                                                   _functionReading = true;
                                                 });
-                                                await _functionsInit[_functionNum]();
+                                                await functionsInit[_functionNum]();
                                                 setState(() => _functionReading = false);
                                               }
                                             } else {
                                               setState(() {
                                                 _functionOpen = true;
-                                                _functionNum = _functionItems.indexOf(fce);
+                                                _functionNum = functionItems.indexOf(fce);
 
                                                 _functionReading = true;
                                               });
-                                              await _functionsInit[_functionNum]();
+                                              await functionsInit[_functionNum]();
                                               setState(() => _functionReading = false);
                                             }
                                           },
@@ -649,12 +650,12 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                                             child: Column(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
-                                                Icon(fce.icon, size: 30, color: _functionOpen && _functionItems.indexOf(fce) == _functionNum ? const Color(0xFFFCD205) : Colors.black),
+                                                Icon(fce.icon, size: 30, color: _functionOpen && functionItems.indexOf(fce) == _functionNum ? const Color(0xFFFCD205) : Colors.black),
                                                 const SizedBox(height: 10),
                                                 Text(
                                                   fce.name,
                                                   textAlign: TextAlign.center,
-                                                  style: TextStyle(fontSize: 12, color: _functionOpen && _functionItems.indexOf(fce) == _functionNum ? const Color(0xFFFCD205) : Colors.black),
+                                                  style: TextStyle(fontSize: 12, color: _functionOpen && functionItems.indexOf(fce) == _functionNum ? const Color(0xFFFCD205) : Colors.black),
                                                 ),
                                               ],
                                             ),
@@ -717,10 +718,12 @@ class _DeviceDetailState extends State<_DeviceDetail> {
     if (discoveredServices[2].characteristicIds.contains(Uuid.parse("00002A26-0000-1000-8000-00805F9B34FB"))) {
       widget.deviceInteractor.discoverCharacteristics(true, widget.id);
       var fwVer = await widget.deviceInteractor.readFwRev();
-
+      if (!mounted) return;
       if (versionCompare(fwVer, latestFwVer) == -1) await _showUpdateAlert(context, fwVer);
+      if (!mounted) return;
       if (versionCompare(fwVer, latestFwVer) == 1) await _showNewFirmwareAlert(context, fwVer);
     } else {
+      if (!mounted) return;
       await _showOldFirmwareAlert(context);
     }
     widget.deviceInteractor.discoverCharacteristics(false, widget.id);
@@ -819,11 +822,12 @@ class _DeviceDetailState extends State<_DeviceDetail> {
               ),
               actions: [
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: const Color(0xFFFCD205), onPrimary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
+                  style: ElevatedButton.styleFrom(foregroundColor: Colors.black, backgroundColor: const Color(0xFFFCD205), padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
                   onPressed: !widget.dfuState.dfuIsInProgress
                       ? () async {
                           await widget.deviceInteractor.blOn();
                           await widget.startDFU(widget.id, true, setState);
+                          if (!mounted) return;
                           Navigator.pop(context);
                           Navigator.pop(context);
                           _showingDialog = false;

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:noyce_joyce_nixie/ble/ble_dfu.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:signal_strength_indicator/signal_strength_indicator.dart';
@@ -80,14 +79,14 @@ class _DevicelistState extends State<_Devicelist> {
     if (widget.bleStatus != BleStatus.ready) {
       int permissonsResult = await widget.checkPermissions();
       if (widget.bleStatus != BleStatus.ready && widget.bleStatus != BleStatus.unknown) {
-        final snackBar = SnackBar(content: Text(widget.determineText(widget.bleStatus)), action: permissonsResult == -1 ? SnackBarAction(label: LocaleKeys.listSettings.tr(), onPressed: () => openAppSettings()) : null);
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(widget.determineText(widget.bleStatus)), action: permissonsResult == -1 ? SnackBarAction(label: LocaleKeys.listSettings.tr(), onPressed: () => openAppSettings()) : null));
       }
     }
     if (widget.bleStatus == BleStatus.ready) {
       if (!widget.startScan()) {
-        final snackBar = SnackBar(content: Text(LocaleKeys.listBleWarning.tr(), textAlign: TextAlign.center));
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(LocaleKeys.listBleWarning.tr(), textAlign: TextAlign.center)));
       }
     }
   }
@@ -154,8 +153,7 @@ class _DevicelistState extends State<_Devicelist> {
                                   } else if (!widget.dfuState.dfuIsInProgress) {
                                     if (device.name.contains("Alarm")) {
                                       ScaffoldMessenger.of(context).clearSnackBars();
-                                      final snackBar = SnackBar(content: Text(LocaleKeys.listAlarmSupport.tr(), textAlign: TextAlign.center));
-                                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(LocaleKeys.listAlarmSupport.tr(), textAlign: TextAlign.center)));
                                     } else {
                                       Navigator.push(context, MaterialPageRoute(builder: (_) => DeviceDetailScreen(id: device.id, name: device.name))).then((value) => widget.startScan());
                                     }
@@ -173,14 +171,14 @@ class _DevicelistState extends State<_Devicelist> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  child: Text(LocaleKeys.listSearch.tr()),
-                  style: ElevatedButton.styleFrom(primary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15)),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15)),
                   onPressed: !widget.scannerState.scanIsInProgress && !widget.dfuState.dfuIsInProgress ? () => startScan() : null,
+                  child: Text(LocaleKeys.listSearch.tr()),
                 ),
                 ElevatedButton(
-                  child: Text(LocaleKeys.listStop.tr()),
-                  style: ElevatedButton.styleFrom(primary: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15)),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15)),
                   onPressed: widget.scannerState.scanIsInProgress && !widget.dfuState.dfuIsInProgress ? () => widget.stopScan() : null,
+                  child: Text(LocaleKeys.listStop.tr()),
                 ),
               ],
             ),
