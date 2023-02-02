@@ -9,20 +9,20 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_reactive_ble: ^5.0.2
-  nordic_dfu: ^5.1.2
+  flutter_reactive_ble: ^5.0.3
+  nordic_dfu: ^5.2.1
   permission_handler: ^10.2.0
   easy_localization: ^3.0.1
-  url_launcher: ^6.1.6
-  provider: ^6.0.4
-  package_info_plus: ^3.0.1
+  url_launcher: ^6.1.8
+  provider: ^6.0.5
+  package_info_plus: ^3.0.2
   flutter_datetime_picker: 
     git:
       url: git@github.com:michalvalkoun/flutter_datetime_picker.git
       ref: master
   signal_strength_indicator: ^0.4.1
   responsive_framework: ^0.2.0
-  shared_preferences: ^2.0.15
+  shared_preferences: ^2.0.17
   meta: ^1.8.0
   intl: ^0.17.0
   http: ^0.13.5
@@ -31,8 +31,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.1
-  flutter_launcher_icons: ^0.10.0
-  rename: ^2.0.1
+  flutter_launcher_icons: ^0.11.0
+  rename: ^2.1.1
 
 flutter_icons:
   android: true
