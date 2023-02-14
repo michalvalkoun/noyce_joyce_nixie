@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
@@ -474,7 +475,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SizedBox(width: 135, child: Text(widget.name, style: const TextStyle(fontFamily: "Abraham", fontSize: 50, height: 1))),
-                                    Text(widget.id),
+                                    if (Platform.isAndroid) Text(widget.id),
                                   ],
                                 ),
                                 TextButton(
@@ -550,7 +551,7 @@ class _DeviceDetailState extends State<_DeviceDetail> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(width: 135, child: Text(widget.name, style: const TextStyle(fontFamily: "Abraham", fontSize: 50, height: 1))),
-                              Text(widget.id),
+                              if (Platform.isAndroid) Text(widget.id),
                               const SizedBox(height: 15),
                             ],
                           ),
@@ -715,7 +716,13 @@ class _DeviceDetailState extends State<_DeviceDetail> {
 
   Future<void> _connectionReaction() async {
     var discoveredServices = await widget.deviceInteractor.discoverServices(widget.id);
-    if (discoveredServices[2].characteristicIds.contains(Uuid.parse("00002A26-0000-1000-8000-00805F9B34FB"))) {
+    bool isNewFirmware = false;
+    if (Platform.isAndroid) {
+      isNewFirmware = discoveredServices[2].characteristicIds.contains(Uuid.parse("00002A26-0000-1000-8000-00805F9B34FB"));
+    } else {
+      isNewFirmware = discoveredServices[0].characteristicIds.contains(Uuid.parse("2a26"));
+    }
+    if (isNewFirmware) {
       widget.deviceInteractor.discoverCharacteristics(true, widget.id);
       var fwVer = await widget.deviceInteractor.readFwRev();
       if (!mounted) return;

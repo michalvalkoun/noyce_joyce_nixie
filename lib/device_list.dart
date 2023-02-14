@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
@@ -129,7 +130,7 @@ class _DevicelistState extends State<_Devicelist> {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               SizedBox(width: 165, child: Text(device.name.contains("Alarm") ? "Nixie Alarm" : device.name, style: const TextStyle(fontFamily: "Abraham", fontSize: 32, height: 1))),
-                                              Text(device.id),
+                                              if (Platform.isAndroid) Text(device.id),
                                               const SizedBox(height: 20),
                                               SignalStrengthIndicator.sector(value: device.rssi, barCount: 4, minValue: -90, maxValue: -50, size: 25, activeColor: Colors.black, inactiveColor: Colors.black12),
                                             ],

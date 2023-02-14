@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:noyce_joyce_nixie/constant.dart';
@@ -22,7 +23,11 @@ class BleDeviceInteractor {
 
   void discoverCharacteristics(bool initial, String deviceId) {
     if (initial) {
-      _firmwareRevisionCharacteristic = QualifiedCharacteristic(serviceId: Uuid.parse(infoServiceUuid), characteristicId: Uuid.parse("00002A26-0000-1000-8000-00805F9B34FB"), deviceId: deviceId);
+      if (Platform.isAndroid) {
+        _firmwareRevisionCharacteristic = QualifiedCharacteristic(serviceId: Uuid.parse(infoServiceUuid), characteristicId: Uuid.parse("00002A26-0000-1000-8000-00805F9B34FB"), deviceId: deviceId);
+      } else {
+        _firmwareRevisionCharacteristic = QualifiedCharacteristic(serviceId: Uuid.parse("180A"), characteristicId: Uuid.parse("2A26"), deviceId: deviceId);
+      }
       _blOnCharacteristic = QualifiedCharacteristic(serviceId: Uuid.parse(interfaceServiceUuid), characteristicId: Uuid.parse("A8ED14FF-130A-4D4B-ACBA-5DE7E77E9B47"), deviceId: deviceId);
     } else {
       _timeFormatCharacteristic = QualifiedCharacteristic(serviceId: Uuid.parse(interfaceServiceUuid), characteristicId: Uuid.parse("A8ED1420-130A-4D4B-ACBA-5DE7E77E9B47"), deviceId: deviceId);
@@ -65,7 +70,7 @@ class BleDeviceInteractor {
 
   Future<void> writeCharacteristic(QualifiedCharacteristic characteristic, List<int> value) async {
     try {
-      await ble.writeCharacteristicWithoutResponse(characteristic, value: value);
+      await ble.writeCharacteristicWithResponse(characteristic, value: value);
       logMessage('Write without response value: $value to ${characteristic.characteristicId}');
     } on Exception catch (e, s) {
       logMessage(
