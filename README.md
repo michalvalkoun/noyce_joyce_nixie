@@ -4,8 +4,8 @@
   
 >Noyce Joyce Nixie is an application written in flutter for controlling nixie products from Noyce Joyce
 
-![Android Version](https://img.shields.io/endpoint?color=green&logo=google-play&logoColor=green&url=https%3A%2F%2Fplayshields.herokuapp.com%2Fplay%3Fi%3Dcom.noycejoyce.noycejoycenixie%26l%3DVersion%26m%3D%24version)
-![Android Installs](https://img.shields.io/endpoint?color=green&logo=google-play&logoColor=green&url=https%3A%2F%2Fplayshields.herokuapp.com%2Fplay%3Fi%3Dcom.noycejoyce.noycejoycenixie%26l%3DInstalls%26m%3D%24installs)
+![Android Version](https://img.shields.io/endpoint?color=green&logo=google-play&logoColor=green&url=https%3A%2F%2Fplay.cuzi.workers.dev%2Fplay%3Fi%3Dcom.noycejoyce.noycejoycenixie%26l%3DVersion%26m%3D%24version)
+![Android Installs](https://img.shields.io/endpoint?color=green&logo=google-play&logoColor=green&url=https%3A%2F%2Fplay.cuzi.workers.dev%2Fplay%3Fi%3Dcom.noycejoyce.noycejoycenixie%26l%3DInstalls%26m%3D%24totalinstalls)
 &nbsp;&nbsp;
 ![IOS Installs](https://img.shields.io/badge/Version-None-blue?logo=appstore)
 ![IOS Installs](https://img.shields.io/badge/Installs-None-blue?logo=appstore)
@@ -15,7 +15,7 @@
 </div>
 
 ## Screenshots
-![landing](https://user-images.githubusercontent.com/61146670/164472753-0f7340b2-91ff-43b9-84df-67e3dd0b65b8.png)
+![landing](https://drive.google.com/uc?id=1DKlz-4M2vK3cHjAJR61S9oeuRmpMsbQ7)
 
 ## Supported products
 
@@ -26,6 +26,6 @@
 
 ## Credits
 
-- 👨‍💻 Created by [Michal Valkoun](http://michalvalkoun.cz)
+- 👨‍💻 Created by [Michal Valkoun](https://github.com/michalvalkoun)
 - 👷‍♀️ Design by [Aneta Kalousková](https://anetakalouskova.com)
 - 👨‍🏫 Firmware by [Ondrej Nentvich](https://cz.linkedin.com/in/ond%C5%99ej-nentvich-32542ba9)
