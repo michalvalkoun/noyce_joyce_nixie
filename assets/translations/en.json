@@ -2,9 +2,8 @@
   "homeVersion": "App version",
   "homeClock": "Nixie Clock",
   "homeAlarm": "Nixie Alarm",
-  "homeClockLink": "https://noycejoyce.com/media/pages/support/e048fd2201-1636027647/nixie-clock_manual_eng_online.pdf",
-  "homeAlarmLink": "https://noycejoyce.com/media/pages/support/59b17f0f91-1639150730/nixie-alarm-manual_eng_2_web.pdf",
-  "homeWebLink": "https://noycejoyce.com",
+  "homeClockLink": "https://drive.google.com/file/d/1UKlC_xukRPGnnrN9Vd2VS9IJKIE7fUYg",
+  "homeAlarmLink": "https://drive.google.com/file/d/1p2hjJF0yQ2irRmMmlPNTTRatS1AtfdM0",
   "homeManuals": "Manuals",
   "listSearch": "Search",
   "listStop": "Stop",
@@ -41,13 +40,10 @@
   "detailCustomTimeDate": "Date",
   "detailCustomTimeTime": "Time",
   "listAlarmSupport": "Nixie Alarm is not supported yet.",
-  "homeNews": "News",
   "homeManualsText": "Product manuals",
-  "homeNewsText": "What is new in the app",
   "listSettings": "Settings",
-  "newsWIFI": "To get news about the app please turn on the WIFI",
-  "newsServer": "Server error, please try again later.",
   "detailUnpairWarning": "Error! Unpair the device in Bluetooth settings.",
-  "homePrivacy": "Privacy policy",
-  "homePrivacyText": "Our privacy policy"
+  "homeLegalLink": "https://sites.google.com/view/noycejoycenixie/en",
+  "homeLegal": "Legal info",
+  "homeLegalText": "Legal information"
 }

@@ -6,7 +6,6 @@ abstract class  LocaleKeys {
   static const homeAlarm = 'homeAlarm';
   static const homeClockLink = 'homeClockLink';
   static const homeAlarmLink = 'homeAlarmLink';
-  static const homeWebLink = 'homeWebLink';
   static const homeManuals = 'homeManuals';
   static const listSearch = 'listSearch';
   static const listStop = 'listStop';
@@ -43,14 +42,11 @@ abstract class  LocaleKeys {
   static const detailCustomTimeDate = 'detailCustomTimeDate';
   static const detailCustomTimeTime = 'detailCustomTimeTime';
   static const listAlarmSupport = 'listAlarmSupport';
-  static const homeNews = 'homeNews';
   static const homeManualsText = 'homeManualsText';
-  static const homeNewsText = 'homeNewsText';
   static const listSettings = 'listSettings';
-  static const newsWIFI = 'newsWIFI';
-  static const newsServer = 'newsServer';
   static const detailUnpairWarning = 'detailUnpairWarning';
-  static const homePrivacy = 'homePrivacy';
-  static const homePrivacyText = 'homePrivacyText';
+  static const homeLegalLink = 'homeLegalLink';
+  static const homeLegal = 'homeLegal';
+  static const homeLegalText = 'homeLegalText';
 
 }

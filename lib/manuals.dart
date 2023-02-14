@@ -37,7 +37,7 @@ class Manuals extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
                 child: InkWell(
                   borderRadius: const BorderRadius.all(Radius.circular(7)),
-                  onTap: () => launchUrl(Uri.parse(item.link), mode: LaunchMode.externalApplication),
+                  onTap: () => launchUrl(Uri.parse(item.link)),
                   child: Padding(
                     padding: const EdgeInsets.all(10),
                     child: Row(

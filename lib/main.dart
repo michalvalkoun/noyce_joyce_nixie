@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
-import 'package:noyce_joyce_nixie/ble/ble_dfu.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import 'ble/ble.dart';
+import 'ble/ble_dfu.dart';
 import 'translations/codegen_loader.g.dart';
 import 'home.dart';
 
@@ -43,28 +43,21 @@ void main() async {
   );
 }
 
-class MyBehavior extends ScrollBehavior {
-  @override
-  Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) => child;
-}
-
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
-      home: const HomeScreen(),
-      builder: (context, child) => ResponsiveWrapper.builder(
-        ScrollConfiguration(behavior: MyBehavior(), child: child!),
-        defaultScale: true,
-        defaultScaleFactor: 1.2,
-        breakpoints: const [ResponsiveBreakpoint.resize(450, name: PHONE, scaleFactor: 1.2)],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
+        home: const HomeScreen(),
+        builder: (context, child) => ResponsiveWrapper.builder(
+          ClampingScrollWrapper.builder(context, child!),
+          defaultScale: true,
+          defaultScaleFactor: 1.2,
+          breakpoints: const [ResponsiveBreakpoint.resize(450, name: PHONE, scaleFactor: 1.2)],
+        ),
+      );
 }

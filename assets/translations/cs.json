@@ -2,9 +2,8 @@
   "homeVersion": "App verze",
   "homeClock": "Digitronové hodiny",
   "homeAlarm": "Digitronový budík",
-  "homeClockLink": "https://noycejoyce.com/media/pages/support/411181fbbd-1636027647/nixie-clock_manual_cz_online.pdf",
-  "homeAlarmLink": "https://noycejoyce.com/media/pages/support/c450b16819-1639150730/nixie-alarm-manual_cz_2_web.pdf",
-  "homeWebLink": "https://noycejoyce.com/cs",
+  "homeClockLink": "https://drive.google.com/file/d/1UKlC_xukRPGnnrN9Vd2VS9IJKIE7fUYg",
+  "homeAlarmLink": "https://drive.google.com/file/d/1eiyBQ_SKMqbXYrz252IK4GeT7Q5DWobj",
   "homeManuals": "Manuály",
   "listSearch": "Hledej",
   "listStop": "Zastavit",
@@ -41,13 +40,10 @@
   "detailCustomTimeDate": "Datum",
   "detailCustomTimeTime": "Čas",
   "listAlarmSupport": "Nixie Alarm zatím není podporovaný.",
-  "homeNews": "Novinky",
   "homeManualsText": "Produktové manuály",
-  "homeNewsText": "Co je nového v aplikaci",
   "listSettings": "Nastavení",
-  "newsWIFI": "Chcete-li dostávat novinky o aplikaci zapněte WIFI",
-  "newsServer": "Chyba serveru, zkuste to znovu později.",
   "detailUnpairWarning": "Chyba! Zrušte párování zařízení v nastavení Bluetooth.",
-  "homePrivacy": "Osobní údaje",
-  "homePrivacyText": "Ochrana osobních údajů"
+  "homeLegalLink": "https://sites.google.com/view/noycejoycenixie/cz",
+  "homeLegal": "Právní info",
+  "homeLegalText": "Právní informace"
 }
