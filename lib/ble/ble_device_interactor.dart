@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'package:noyce_joyce_nixie/ble/night_mode_time_codec.dart';
 import 'package:noyce_joyce_nixie/constant.dart';
 
 class BleDeviceInteractor {
@@ -96,10 +97,8 @@ class BleDeviceInteractor {
   }
 
   Future<void> setNightModeTime(DateTime start, DateTime end) async {
-    var startTimeStamp = ((start.millisecondsSinceEpoch + start.timeZoneOffset.inMilliseconds) / 1000).round();
-    var endTimeStamp = ((end.millisecondsSinceEpoch + end.timeZoneOffset.inMilliseconds) / 1000).round();
-    await writeCharacteristic(_nightModeStartCharacteristic, _intToList(startTimeStamp));
-    await writeCharacteristic(_nightModeEndCharacteristic, _intToList(endTimeStamp));
+    await writeCharacteristic(_nightModeStartCharacteristic, encodeNightModeTime(start));
+    await writeCharacteristic(_nightModeEndCharacteristic, encodeNightModeTime(end));
   }
 
   Future<List> getNightMode() async {
@@ -108,8 +107,8 @@ class BleDeviceInteractor {
     var end = await readCharacteristic(_nightModeEndCharacteristic);
     return [
       state[0] > 0 ? true : false,
-      DateTime.fromMillisecondsSinceEpoch((_listToInt(start) - 3600) * 1000),
-      DateTime.fromMillisecondsSinceEpoch((_listToInt(end) - 3600) * 1000),
+      decodeNightModeTime(start),
+      decodeNightModeTime(end),
     ];
   }
 
